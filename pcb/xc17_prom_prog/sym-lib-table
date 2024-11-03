@@ -1,0 +1,6 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "FPGA_Lattice_ICE40HX1K")(type "KiCad")(uri "${KIPRJMOD}/../lib/FPGA_Lattice_ICE40HX1K.kicad_sym")(options "")(descr ""))
+  (lib (name "Regulator_Linear_LT3030")(type "KiCad")(uri "${KIPRJMOD}/../lib/Regulator_Linear_LT3030.kicad_sym")(options "")(descr ""))
+  (lib (name "Memory_ROM_XC17S00")(type "KiCad")(uri "${KIPRJMOD}/../lib/Memory_ROM_XC17S00.kicad_sym")(options "")(descr ""))
+)

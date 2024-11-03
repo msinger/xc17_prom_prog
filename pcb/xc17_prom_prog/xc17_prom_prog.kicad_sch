@@ -1,0 +1,803 @@
+(kicad_sch
+	(version 20231120)
+	(generator "eeschema")
+	(generator_version "8.0")
+	(uuid "3afea672-343d-4fc8-b012-067ac21cc0e9")
+	(paper "A4")
+	(title_block
+		(title "XC17xxx PROM Programmer")
+		(date "2024-11-02")
+		(rev "0")
+		(company "CC-BY-SA-4.0 Michael Singer")
+		(comment 1 "https://github.com/msinger/xc17_prom_prog/")
+		(comment 2 "http://iceboy.a-singer.de/")
+	)
+	(lib_symbols)
+	(wire
+		(pts
+			(xy 106.68 110.49) (xy 128.27 110.49)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "097201d4-5f1a-4e70-afbc-a115553e6aa6")
+	)
+	(wire
+		(pts
+			(xy 106.68 87.63) (xy 128.27 87.63)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1ecf5985-ff6c-4340-9ff4-73f7d0301063")
+	)
+	(wire
+		(pts
+			(xy 171.45 77.47) (xy 193.04 77.47)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2003baa7-913b-40e1-9204-20fd478364c3")
+	)
+	(wire
+		(pts
+			(xy 171.45 92.71) (xy 193.04 92.71)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2472b713-2bf2-4706-96a3-14d56abd5bec")
+	)
+	(wire
+		(pts
+			(xy 171.45 74.93) (xy 193.04 74.93)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "277e4bd9-c649-4d2f-b1b5-5832cbf763b5")
+	)
+	(wire
+		(pts
+			(xy 171.45 80.01) (xy 193.04 80.01)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3f9baab2-1955-4cd4-8326-4672b09ef78f")
+	)
+	(wire
+		(pts
+			(xy 106.68 90.17) (xy 128.27 90.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4c4406c6-7e83-4786-8855-0c9bdc249d96")
+	)
+	(bus
+		(pts
+			(xy 106.68 82.55) (xy 128.27 82.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "51a29f23-6cfe-48e1-bab4-708865cd1079")
+	)
+	(wire
+		(pts
+			(xy 106.68 113.03) (xy 128.27 113.03)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5b512272-20b0-439d-9bae-e1618a9bf035")
+	)
+	(wire
+		(pts
+			(xy 171.45 90.17) (xy 193.04 90.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6c4c1163-25ec-4cee-90ec-ac3cddec99a3")
+	)
+	(wire
+		(pts
+			(xy 171.45 100.33) (xy 193.04 100.33)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "86d2f84b-42e6-4572-95ba-71f87bdc5e6c")
+	)
+	(wire
+		(pts
+			(xy 171.45 85.09) (xy 193.04 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "970a58d3-ec9c-4fe7-bfc2-bea2ddfe4f38")
+	)
+	(wire
+		(pts
+			(xy 106.68 74.93) (xy 128.27 74.93)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9c6c9d37-c14e-4372-8e8f-022780e5e26f")
+	)
+	(wire
+		(pts
+			(xy 171.45 97.79) (xy 193.04 97.79)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9fbde573-153d-467b-b985-2beea281329f")
+	)
+	(wire
+		(pts
+			(xy 106.68 105.41) (xy 128.27 105.41)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b3f02204-9892-4a77-868a-405c9f720633")
+	)
+	(wire
+		(pts
+			(xy 106.68 102.87) (xy 128.27 102.87)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c220b006-274f-4528-b344-f01fe559ec36")
+	)
+	(wire
+		(pts
+			(xy 171.45 87.63) (xy 193.04 87.63)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d56148b8-3502-4031-9bad-956cf9f75cad")
+	)
+	(wire
+		(pts
+			(xy 171.45 118.11) (xy 193.04 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d6022651-65cf-4ee3-9a7c-900b9ee49c1f")
+	)
+	(bus
+		(pts
+			(xy 106.68 80.01) (xy 128.27 80.01)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ed6faec8-0b0c-4206-9b45-8b07ce44ba74")
+	)
+	(wire
+		(pts
+			(xy 106.68 115.57) (xy 128.27 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f70dc730-682e-4f45-b431-125eb3072f91")
+	)
+	(wire
+		(pts
+			(xy 106.68 118.11) (xy 128.27 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f9b7a387-b8bf-4a9d-ab6a-6ed81f0c3f12")
+	)
+	(sheet
+		(at 193.04 72.39)
+		(size 27.94 48.26)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "43172acb-73d1-430e-bac0-31c53bbc6dab")
+		(property "Sheetname" "PROM"
+			(at 193.04 71.6784 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "prom.kicad_sch"
+			(at 193.04 121.2346 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "PROM_DATA" bidirectional
+			(at 193.04 74.93 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "f4c34977-b312-44f2-a685-2df5bcb91de1")
+		)
+		(pin "DATA_~{OE}" input
+			(at 193.04 77.47 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "93557d20-4efd-46f5-bb55-bcd07edef993")
+		)
+		(pin "DATA_DIR" input
+			(at 193.04 80.01 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "2b41e981-d574-4f38-8ba8-2ae01c845190")
+		)
+		(pin "PROM_~{CE}" input
+			(at 193.04 87.63 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "576ce6fb-d106-40e0-93f6-ca32d6f179cc")
+		)
+		(pin "PROM_RESET_~{OE}" input
+			(at 193.04 90.17 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "6a1fbd4c-551d-4b12-9fda-69d5b1caf0e9")
+		)
+		(pin "PROM_CLK" input
+			(at 193.04 85.09 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "7512572c-7209-4044-b3c7-6d8a5173501b")
+		)
+		(pin "CONTROL_~{OE}" input
+			(at 193.04 92.71 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "9cdf0452-edce-403e-adb5-e10be1e187ec")
+		)
+		(pin "PROM_~{CEO}" output
+			(at 193.04 97.79 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "4f8b5346-d921-4091-afe4-1af5a18298b8")
+		)
+		(pin "~{CEO_OE}" input
+			(at 193.04 100.33 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "2ef7fba9-db6e-4321-95f5-451e592ae0e5")
+		)
+		(pin "PROM_LED" input
+			(at 193.04 118.11 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "91aa73e0-f314-485f-a177-27804b72b3c9")
+		)
+		(instances
+			(project "xc17_prom_prog"
+				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9"
+					(page "5")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 81.28 100.33)
+		(size 25.4 20.32)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "4386c87e-0289-4ca9-b4f1-828ed0f2da9a")
+		(property "Sheetname" "PROM Power"
+			(at 81.28 99.6184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "prom_power.kicad_sch"
+			(at 81.28 121.2346 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "SELECT_VCC_5V" input
+			(at 106.68 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "fd1986c5-2f1e-4b3f-9fff-321b5965f6c6")
+		)
+		(pin "SELECT_VPP_5V4" input
+			(at 106.68 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "603ec778-fa13-4b8c-b7b6-7b5e539f7789")
+		)
+		(pin "SELECT_VCC_3V3" input
+			(at 106.68 102.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "0519a9a3-3d90-4cf4-a9d6-b0e4cd284e39")
+		)
+		(pin "SELECT_VPP_12V25" input
+			(at 106.68 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "8bd112e9-de5e-4296-8a9a-d3e443acef68")
+		)
+		(pin "SELECT_VPP_5V" input
+			(at 106.68 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "a898dac0-d5b2-4e2a-868b-3f9d90846b01")
+		)
+		(pin "SELECT_VPP_3V7" input
+			(at 106.68 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "fec16035-2c77-498d-ae6d-c08793b794d3")
+		)
+		(instances
+			(project "xc17_prom_prog"
+				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 81.28 72.39)
+		(size 25.4 20.32)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "5f9820e2-b7a1-41fc-b745-52ca3d998b61")
+		(property "Sheetname" "FPGA Power"
+			(at 81.28 71.6784 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "fpga_power.kicad_sch"
+			(at 81.28 93.2946 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "DBUS[0..7]" bidirectional
+			(at 106.68 80.01 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "cd85a02d-8c30-4d5c-8f40-134ed6c70ee0")
+		)
+		(pin "USB_~{SUSPEND}" output
+			(at 106.68 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "9d944b2a-14a4-4924-969b-bde1ecae1f0c")
+		)
+		(pin "USB_~{PWREN}" output
+			(at 106.68 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "d499d411-f10a-4716-b2a4-577c4024374b")
+		)
+		(pin "CBUS[0..4]" bidirectional
+			(at 106.68 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "f839d025-8bda-4c16-865f-d64f5cd252c9")
+		)
+		(pin "CLK12M" output
+			(at 106.68 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "48c14789-3fb0-43bc-9c00-efffb307712e")
+		)
+		(instances
+			(project "xc17_prom_prog"
+				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 128.27 72.39)
+		(size 43.18 48.26)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "a8f52001-7a25-4283-bdf4-2dead0af6825")
+		(property "Sheetname" "FPGA"
+			(at 128.27 71.6784 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "fpga.kicad_sch"
+			(at 128.27 121.2346 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "SELECT_VPP_5V" output
+			(at 128.27 113.03 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "c6d44a9a-26f5-4a30-ab31-9a4fee917cfc")
+		)
+		(pin "SELECT_VPP_5V4" output
+			(at 128.27 115.57 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "101d07fe-8c57-4f77-84db-a9432ec1219d")
+		)
+		(pin "SELECT_VCC_3V3" output
+			(at 128.27 102.87 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "46cefe20-cfb9-417c-8a18-16f039a7dc79")
+		)
+		(pin "SELECT_VPP_3V7" output
+			(at 128.27 110.49 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "3239be1b-0139-4e69-a22b-d2d15ea698a5")
+		)
+		(pin "SELECT_VPP_12V25" output
+			(at 128.27 118.11 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "2cdccd22-305e-4ad9-ae03-cbce6c0a6335")
+		)
+		(pin "SELECT_VCC_5V" output
+			(at 128.27 105.41 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "5c86033a-fdd0-4f73-b114-e4dc7be93514")
+		)
+		(pin "PROM_RESET_~{OE}" output
+			(at 171.45 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "8f31a8c8-567c-462a-8cf8-a5fceea5d413")
+		)
+		(pin "~{CEO_OE}" output
+			(at 171.45 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "205695ea-5498-466f-b7e3-06c2d99a4473")
+		)
+		(pin "PROM_~{CEO}" input
+			(at 171.45 97.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "b7e7b679-4319-4cd1-9200-23f1b57f669a")
+		)
+		(pin "PROM_CLK" output
+			(at 171.45 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "c8b3fe0b-5673-472b-b22e-26ce53c6810e")
+		)
+		(pin "PROM_~{CE}" output
+			(at 171.45 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "1e9082ef-4cdd-4de6-b93f-d5199097025b")
+		)
+		(pin "PROM_DATA" bidirectional
+			(at 171.45 74.93 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "36aed4d6-7182-4aca-b077-a1f9a1724a42")
+		)
+		(pin "CONTROL_~{OE}" output
+			(at 171.45 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "f3fdb8d1-0956-4c6a-af37-3ca86142c2dc")
+		)
+		(pin "DATA_~{OE}" output
+			(at 171.45 77.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "9886f20e-3459-4e5f-acf5-0d44add7b799")
+		)
+		(pin "DATA_DIR" output
+			(at 171.45 80.01 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "0f212b7d-becb-4f52-8a62-a2d73925ee21")
+		)
+		(pin "USB_~{PWREN}" input
+			(at 128.27 87.63 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "a6d5bd0a-9858-464f-8789-c1f1a63817d7")
+		)
+		(pin "CLK12M" input
+			(at 128.27 74.93 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "bd3aed22-c043-4ef7-9f64-965582c31eea")
+		)
+		(pin "DBUS[0..7]" bidirectional
+			(at 128.27 80.01 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "50c421f2-926d-4c86-a48f-a979e39bb84a")
+		)
+		(pin "CBUS[0..4]" bidirectional
+			(at 128.27 82.55 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "a53d53e2-4214-4153-a89b-a56e41d7bc7f")
+		)
+		(pin "USB_~{SUSPEND}" input
+			(at 128.27 90.17 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "e3a3b83d-6e24-4dc6-9317-076ced108b2f")
+		)
+		(pin "PROM_LED" output
+			(at 171.45 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "145f6626-a87e-484d-bb4c-d9c2f397d423")
+		)
+		(instances
+			(project "xc17_prom_prog"
+				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+)
