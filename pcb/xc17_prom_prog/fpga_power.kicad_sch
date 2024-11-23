@@ -6,8 +6,8 @@
 	(paper "A4")
 	(title_block
 		(title "XC17xxx PROM Programmer")
-		(date "2024-11-02")
-		(rev "0")
+		(date "2024-11-23")
+		(rev "1")
 		(company "CC-BY-SA-4.0 Michael Singer")
 		(comment 1 "https://github.com/msinger/xc17_prom_prog/")
 		(comment 2 "http://iceboy.a-singer.de/")
@@ -11465,10 +11465,10 @@
 		(lib_id "Device:R")
 		(at 92.71 147.32 0)
 		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
+		(exclude_from_sim yes)
+		(in_bom no)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "029f1f47-87d7-415c-8734-214b512898b4")
 		(property "Reference" "R9"
 			(at 94.742 147.32 90)
@@ -13134,7 +13134,7 @@
 				)
 			)
 		)
-		(property "Value" "665"
+		(property "Value" "2.05k"
 			(at 105.41 80.01 90)
 			(effects
 				(font
@@ -17132,10 +17132,10 @@
 		(lib_id "Device:R")
 		(at 92.71 170.18 0)
 		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
+		(exclude_from_sim yes)
+		(in_bom no)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "c91c1308-eec5-4331-bf99-3aec2631848c")
 		(property "Reference" "R10"
 			(at 94.742 170.18 90)
@@ -17547,7 +17547,7 @@
 				)
 			)
 		)
-		(property "Value" "1k"
+		(property "Value" "2.05k"
 			(at 120.65 80.01 90)
 			(effects
 				(font

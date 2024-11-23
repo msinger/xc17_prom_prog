@@ -6,8 +6,8 @@
 	(paper "A4")
 	(title_block
 		(title "XC17xxx PROM Programmer")
-		(date "2024-11-02")
-		(rev "0")
+		(date "2024-11-23")
+		(rev "1")
 		(company "CC-BY-SA-4.0 Michael Singer")
 		(comment 1 "https://github.com/msinger/xc17_prom_prog/")
 		(comment 2 "http://iceboy.a-singer.de/")
@@ -3767,10 +3767,6 @@
 		(uuid "331929d4-c92e-493e-87c8-40f7bd8451f2")
 	)
 	(no_connect
-		(at 144.78 167.64)
-		(uuid "3baef861-6d14-4dc4-8a65-fb61ca17342c")
-	)
-	(no_connect
 		(at 144.78 137.16)
 		(uuid "3f0e35b6-f196-4d56-a4dd-51de3718622d")
 	)
@@ -3823,16 +3819,8 @@
 		(uuid "956287b0-d54a-445f-a9db-2dc2be20f3c1")
 	)
 	(no_connect
-		(at 133.35 68.58)
-		(uuid "95cc0ff4-85d9-4f06-b574-82e4a5eb8f11")
-	)
-	(no_connect
 		(at 144.78 142.24)
 		(uuid "97ac9305-9af2-49de-811f-662e755f754f")
-	)
-	(no_connect
-		(at 144.78 129.54)
-		(uuid "a0b4fde3-3dc9-4c3a-90c2-959b3edae8e7")
 	)
 	(no_connect
 		(at 240.03 55.88)
@@ -4537,6 +4525,16 @@
 	)
 	(wire
 		(pts
+			(xy 144.78 129.54) (xy 166.37 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "54f360b3-514e-483a-b3fe-2016e357c066")
+	)
+	(wire
+		(pts
 			(xy 99.06 107.95) (xy 99.06 109.22)
 		)
 		(stroke
@@ -4717,7 +4715,7 @@
 	)
 	(wire
 		(pts
-			(xy 44.45 68.58) (xy 54.61 68.58)
+			(xy 38.1 68.58) (xy 54.61 68.58)
 		)
 		(stroke
 			(width 0)
@@ -5124,6 +5122,16 @@
 			(type default)
 		)
 		(uuid "b4afe71e-e3d6-4f82-a53b-67d8ba165d39")
+	)
+	(wire
+		(pts
+			(xy 105.41 68.58) (xy 133.35 68.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b58476bd-379d-418c-977a-2e6e19f56c54")
 	)
 	(wire
 		(pts
@@ -5577,6 +5585,16 @@
 	)
 	(wire
 		(pts
+			(xy 144.78 167.64) (xy 166.37 167.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f89f0574-df09-4d5a-a97a-aa0c81b36e32")
+	)
+	(wire
+		(pts
 			(xy 99.06 109.22) (xy 107.95 109.22)
 		)
 		(stroke
@@ -5820,6 +5838,17 @@
 		)
 		(uuid "460f7c7c-1388-4310-ba9e-62c964af08c2")
 	)
+	(label "PROM_LED"
+		(at 41.91 68.58 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "473c26b3-0842-44ec-81ab-e099cd32eacd")
+	)
 	(label "DATA_DIR"
 		(at 111.76 83.82 0)
 		(fields_autoplaced yes)
@@ -5831,6 +5860,17 @@
 		)
 		(uuid "48005d34-20c5-47ce-9888-abb4e451581d")
 	)
+	(label "SELECT_GND"
+		(at 166.37 167.64 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "4d61cb0c-bb26-4ab3-a7b0-d9081c616f1f")
+	)
 	(label "SELECT_VCC_3V3"
 		(at 111.76 167.64 0)
 		(fields_autoplaced yes)
@@ -5841,6 +5881,17 @@
 			(justify left bottom)
 		)
 		(uuid "511bb3c6-f1da-44e0-bf8f-b19ec5570a99")
+	)
+	(label "PROM_LED"
+		(at 166.37 129.54 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "53b16749-3187-4ba0-b557-2dfc94560e9f")
 	)
 	(label "PROM_RESET_~{OE}"
 		(at 111.76 71.12 0)
@@ -5874,6 +5925,17 @@
 			(justify left bottom)
 		)
 		(uuid "5d1b76cb-71da-4bf8-a201-63efeb375d81")
+	)
+	(label "SELECT_GND"
+		(at 111.76 68.58 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "677e2114-6cb5-4a29-86c8-ef03f3736fa8")
 	)
 	(label "PROM_CLK"
 		(at 111.76 73.66 0)
@@ -6211,6 +6273,18 @@
 		)
 		(uuid "17e9e14c-2a38-4cf8-8ab6-9bba1030f046")
 	)
+	(hierarchical_label "SELECT_GND"
+		(shape output)
+		(at 105.41 68.58 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "1854a58b-f953-4d54-9915-b2841116fa6e")
+	)
 	(hierarchical_label "SELECT_VCC_5V"
 		(shape output)
 		(at 105.41 55.88 180)
@@ -6237,7 +6311,7 @@
 	)
 	(hierarchical_label "PROM_LED"
 		(shape output)
-		(at 44.45 68.58 180)
+		(at 38.1 68.58 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -6400,7 +6474,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "06277516-e128-4521-86bc-a4607683c489")
-		(property "Reference" "#PWR0106"
+		(property "Reference" "#PWR0110"
 			(at 198.12 86.36 0)
 			(effects
 				(font
@@ -6450,7 +6524,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/a8f52001-7a25-4283-bdf4-2dead0af6825"
-					(reference "#PWR0106")
+					(reference "#PWR0110")
 					(unit 1)
 				)
 			)
@@ -6895,7 +6969,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "16b4cbb2-49a9-4461-9c5f-f3cacb358074")
-		(property "Reference" "#PWR099"
+		(property "Reference" "#PWR0103"
 			(at 125.73 101.6 0)
 			(effects
 				(font
@@ -6945,7 +7019,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/a8f52001-7a25-4283-bdf4-2dead0af6825"
-					(reference "#PWR099")
+					(reference "#PWR0103")
 					(unit 1)
 				)
 			)
@@ -6960,7 +7034,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "173ab674-c187-4b4a-923d-d12e7524c0ce")
-		(property "Reference" "#PWR097"
+		(property "Reference" "#PWR0101"
 			(at 48.26 118.11 0)
 			(effects
 				(font
@@ -7010,7 +7084,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/a8f52001-7a25-4283-bdf4-2dead0af6825"
-					(reference "#PWR097")
+					(reference "#PWR0101")
 					(unit 1)
 				)
 			)
@@ -7025,7 +7099,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "317cdb9c-08f2-4efd-b94e-b84b5772d880")
-		(property "Reference" "#PWR0104"
+		(property "Reference" "#PWR0108"
 			(at 147.32 184.15 0)
 			(effects
 				(font
@@ -7075,7 +7149,7 @@
 		(instances
 			(project ""
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/a8f52001-7a25-4283-bdf4-2dead0af6825"
-					(reference "#PWR0104")
+					(reference "#PWR0108")
 					(unit 1)
 				)
 			)
@@ -7520,7 +7594,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "344cf518-7723-41fa-9362-24a74b2b33e8")
-		(property "Reference" "#PWR098"
+		(property "Reference" "#PWR0102"
 			(at 52.07 31.75 0)
 			(effects
 				(font
@@ -7570,7 +7644,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/a8f52001-7a25-4283-bdf4-2dead0af6825"
-					(reference "#PWR098")
+					(reference "#PWR0102")
 					(unit 1)
 				)
 			)
@@ -7946,7 +8020,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "4782784d-692d-44a7-9642-f873934ce4d6")
-		(property "Reference" "#PWR0101"
+		(property "Reference" "#PWR0105"
 			(at 129.54 184.15 0)
 			(effects
 				(font
@@ -7996,7 +8070,7 @@
 		(instances
 			(project ""
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/a8f52001-7a25-4283-bdf4-2dead0af6825"
-					(reference "#PWR0101")
+					(reference "#PWR0105")
 					(unit 1)
 				)
 			)
@@ -8011,7 +8085,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "4c11c7bd-e0a4-48d8-b8ff-8954325517ff")
-		(property "Reference" "#PWR0110"
+		(property "Reference" "#PWR0114"
 			(at 256.54 116.84 0)
 			(effects
 				(font
@@ -8061,7 +8135,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/a8f52001-7a25-4283-bdf4-2dead0af6825"
-					(reference "#PWR0110")
+					(reference "#PWR0114")
 					(unit 1)
 				)
 			)
@@ -8575,7 +8649,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "717d96c0-9af6-4566-9616-81f84ed5b14d")
-		(property "Reference" "#PWR0100"
+		(property "Reference" "#PWR0104"
 			(at 125.73 116.84 0)
 			(effects
 				(font
@@ -8625,7 +8699,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/a8f52001-7a25-4283-bdf4-2dead0af6825"
-					(reference "#PWR0100")
+					(reference "#PWR0104")
 					(unit 1)
 				)
 			)
@@ -8847,7 +8921,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "940ae00b-e0ff-4327-a957-4cffbc7f3eb6")
-		(property "Reference" "#PWR0109"
+		(property "Reference" "#PWR0113"
 			(at 256.54 101.6 0)
 			(effects
 				(font
@@ -8897,7 +8971,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/a8f52001-7a25-4283-bdf4-2dead0af6825"
-					(reference "#PWR0109")
+					(reference "#PWR0113")
 					(unit 1)
 				)
 			)
@@ -9232,7 +9306,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "9f66cc8f-79f2-41da-b2e1-646167611e7a")
-		(property "Reference" "#PWR0103"
+		(property "Reference" "#PWR0107"
 			(at 147.32 128.27 0)
 			(effects
 				(font
@@ -9282,7 +9356,7 @@
 		(instances
 			(project ""
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/a8f52001-7a25-4283-bdf4-2dead0af6825"
-					(reference "#PWR0103")
+					(reference "#PWR0107")
 					(unit 1)
 				)
 			)
@@ -9297,7 +9371,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "a2d3cbde-ff58-458c-b2b9-b2af4babbc35")
-		(property "Reference" "#PWR0105"
+		(property "Reference" "#PWR0109"
 			(at 186.69 31.75 0)
 			(effects
 				(font
@@ -9347,7 +9421,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/a8f52001-7a25-4283-bdf4-2dead0af6825"
-					(reference "#PWR0105")
+					(reference "#PWR0109")
 					(unit 1)
 				)
 			)
@@ -9431,7 +9505,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "b1f2aae1-9fb7-454c-842e-024346defcfa")
-		(property "Reference" "#PWR0102"
+		(property "Reference" "#PWR0106"
 			(at 130.81 31.75 0)
 			(effects
 				(font
@@ -9481,7 +9555,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/a8f52001-7a25-4283-bdf4-2dead0af6825"
-					(reference "#PWR0102")
+					(reference "#PWR0106")
 					(unit 1)
 				)
 			)
@@ -9496,7 +9570,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "c1a22662-6657-4101-8e70-efc6d511fcc1")
-		(property "Reference" "#PWR0108"
+		(property "Reference" "#PWR0112"
 			(at 237.49 31.75 0)
 			(effects
 				(font
@@ -9546,7 +9620,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/a8f52001-7a25-4283-bdf4-2dead0af6825"
-					(reference "#PWR0108")
+					(reference "#PWR0112")
 					(unit 1)
 				)
 			)
@@ -9975,7 +10049,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "f81d8b9b-b1b5-4795-be4a-c8ed256f6424")
-		(property "Reference" "#PWR0107"
+		(property "Reference" "#PWR0111"
 			(at 198.12 101.6 0)
 			(effects
 				(font
@@ -10025,7 +10099,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/a8f52001-7a25-4283-bdf4-2dead0af6825"
-					(reference "#PWR0107")
+					(reference "#PWR0111")
 					(unit 1)
 				)
 			)
@@ -10040,7 +10114,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "fbb5c063-d47c-4e9c-bfc8-1eb74e309617")
-		(property "Reference" "#PWR096"
+		(property "Reference" "#PWR0100"
 			(at 48.26 102.87 0)
 			(effects
 				(font
@@ -10090,7 +10164,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/a8f52001-7a25-4283-bdf4-2dead0af6825"
-					(reference "#PWR096")
+					(reference "#PWR0100")
 					(unit 1)
 				)
 			)

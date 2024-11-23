@@ -6,8 +6,8 @@
 	(paper "A4")
 	(title_block
 		(title "XC17xxx PROM Programmer")
-		(date "2024-11-02")
-		(rev "0")
+		(date "2024-11-23")
+		(rev "1")
 		(company "CC-BY-SA-4.0 Michael Singer")
 		(comment 1 "https://github.com/msinger/xc17_prom_prog/")
 		(comment 2 "http://iceboy.a-singer.de/")
@@ -162,6 +162,16 @@
 			(type default)
 		)
 		(uuid "b3f02204-9892-4a77-868a-405c9f720633")
+	)
+	(wire
+		(pts
+			(xy 171.45 109.22) (xy 193.04 109.22)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b97726a9-def7-4f83-8f5a-bb90a6ca4b35")
 	)
 	(wire
 		(pts
@@ -352,6 +362,16 @@
 				(justify left)
 			)
 			(uuid "91aa73e0-f314-485f-a177-27804b72b3c9")
+		)
+		(pin "SELECT_GND" input
+			(at 193.04 109.22 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "136fa4dc-3d7c-430b-9a1d-d857bb9221f3")
 		)
 		(instances
 			(project "xc17_prom_prog"
@@ -786,6 +806,16 @@
 				(justify right)
 			)
 			(uuid "145f6626-a87e-484d-bb4c-d9c2f397d423")
+		)
+		(pin "SELECT_GND" output
+			(at 171.45 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "c2876994-b27a-4b08-9cb8-7a137b5ee11e")
 		)
 		(instances
 			(project "xc17_prom_prog"
