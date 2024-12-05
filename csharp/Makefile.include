@@ -1,0 +1,277 @@
+VALID_CULTURES = ar bg ca zh-CHS cs da de el en es fi fr he hu is it ja ko nl no pl pt ro ru hr sk sq sv th tr id uk be sl et lv lt fa vi hy eu mk af fo hi sw gu ta te kn mr gl kok ar-SA bg-BG ca-ES zh-TW cs-CZ da-DK de-DE el-GR en-US fi-FI fr-FR he-IL hu-HU is-IS it-IT ja-JP ko-KR nl-NL nb-NO pl-PL pt-BR ro-RO ru-RU hr-HR sk-SK sq-AL sv-SE th-TH tr-TR id-ID uk-UA be-BY sl-SI et-EE lv-LV lt-LT fa-IR vi-VN hy-AM eu-ES mk-MK af-ZA fo-FO hi-IN sw-KE gu-IN ta-IN te-IN kn-IN mr-IN gl-ES kok-IN ar-IQ zh-CN de-CH en-GB es-MX fr-BE it-CH nl-BE nn-NO pt-PT sv-FI ar-EG zh-HK de-AT en-AU es-ES fr-CA ar-LY zh-SG de-LU en-CA es-GT fr-CH ar-DZ zh-MO en-NZ es-CR fr-LU ar-MA en-IE es-PA ar-TN en-ZA es-DO ar-OM es-VE ar-YE es-CO ar-SY es-PE ar-JO es-AR ar-LB en-ZW es-EC ar-KW en-PH es-CL ar-AE es-UY ar-BH es-PY ar-QA es-BO es-SV es-HN es-NI es-PR zh-CHT
+
+build_sources = $(FILES) $(GENERATED_FILES)
+build_sources_embed = $(build_sources:%='$(srcdir)/%')
+
+comma__=,
+get_resource_name = $(firstword $(subst $(comma__), ,$1))
+get_culture =  $(lastword $(subst ., ,$(basename $1)))
+is_cultured_resource = $(and $(word 3,$(subst ., ,$1)), $(filter $(VALID_CULTURES),$(lastword $(subst ., ,$(basename $1)))))
+
+build_resx_list = $(foreach res, $(RESOURCES), $(if $(filter %.resx, $(call get_resource_name,$(res))),$(res),))
+build_non_culture_resx_list = $(foreach res, $(build_resx_list),$(if $(call is_cultured_resource,$(call get_resource_name,$(res))),,$(res)))
+build_non_culture_others_list = $(foreach res, $(filter-out $(build_resx_list),$(RESOURCES)),$(if $(call is_cultured_resource,$(call get_resource_name,$(res))),,$(res)))
+build_others_list = $(build_non_culture_others_list)
+
+# resgen all .resx resources
+build_resx_files = $(foreach res, $(build_resx_list), $(call get_resource_name,$(res)))
+build_resx_resources = $(build_resx_files:.resx=.resources)
+
+# embed resources for the main assembly
+build_resx_resources_hack = $(subst .resx,.resources, $(build_non_culture_resx_list))
+build_resx_resources_embed = $(build_resx_resources_hack:%=-resource:'%')
+build_others_files = $(foreach res, $(build_others_list),$(call get_resource_name,$(res)))
+build_others_resources = $(build_others_files)
+build_others_resources_embed = $(build_others_list:%=-resource:'$(srcdir)/%')
+
+build_resources = $(build_resx_resources) $(build_others_resources)
+build_resources_embed = $(build_resx_resources_embed) $(build_others_resources_embed)
+
+append_dll_ext = $(if $(filter %.dll,$1),$1,$1.dll)
+windows_path_sep = $(if $(filter Cygwin,$(shell uname -o)),$(subst /,\,$1),$1)
+windows_path = $(if $(filter Cygwin,$(shell uname -o)),$(shell cygpath -was $1),$1)
+
+build_references_ref = $(foreach ref, $(REFERENCES), $(if $(filter -pkg:%,$(ref)),$(ref),$(if $(filter -r:%,$(ref)),$(call append_dll_ext,$(ref)),-r:'$(call append_dll_ext,$(ref))')))
+build_references_ref += $(foreach ref, $(DLL_REFERENCES), -r:'$(call append_dll_ext,$(ref))')
+build_references_ref += $(foreach ref, $(PROJECT_REFERENCES), -r:'$(call append_dll_ext,$(ref))')
+build_references_ref += $(foreach ref, $(MACRO_REFERENCES), $(if $(filter -m:%,$(ref)),$(call append_dll_ext,$(ref)),-m:'$(call append_dll_ext,$(ref))'))
+build_references_ref += $(foreach ref, $(MACRO_PROJECT_REFERENCES), -m:'$(call append_dll_ext,$(ref))')
+
+EXTRA_DIST += $(build_sources) $(build_resx_files) $(build_others_files) $(if $(NO_INST_ASSEMBLY),,$(ASSEMBLY_WRAPPER_IN) $(LINUX_PKGCONFIG_IN)) $(EXTRAS) $(DATA_FILES) $(build_culture_res_files)
+CLEANFILES += $(ASSEMBLY) $(ASSEMBLY).mdb $(if $(NO_INST_ASSEMBLY),,$(ASSEMBLY_WRAPPER) $(LINUX_PKGCONFIG)) $(build_resx_resources) $(build_satellite_assembly_list)
+DISTCLEANFILES = $(builddir)/*.pidb
+MAINTAINERCLEANFILES = $(builddir)/Makefile.in
+
+noinst_SCRIPTS = $(if $(NO_INST_ASSEMBLY),$(ASSEMBLY))
+pkglibexec_SCRIPTS = $(if $(NO_INST_ASSEMBLY),,$(ASSEMBLY))
+bin_SCRIPTS = $(if $(NO_INST_ASSEMBLY),,$(ASSEMBLY_WRAPPER))
+programfilesdir = @libdir@/@PACKAGE@
+noinst_DATA = $(if $(NO_INST_ASSEMBLY),$(ASSEMBLY_MDB))
+programfiles_DATA = $(if $(NO_INST_ASSEMBLY),,$(ASSEMBLY_MDB))
+linuxpkgconfigdir = @datadir@/pkgconfig
+linuxpkgconfig_DATA = $(if $(NO_INST_ASSEMBLY),,$(LINUX_PKGCONFIG))
+AM_INSTALLCHECK_STD_OPTIONS_EXEMPT = $(if $(exe_target),,$(ASSEMBLY))
+
+# macros
+
+# $(call emit-deploy-wrapper,wrapper-variable-name,wrapper-sourcefile,x)
+# assumes that for a wrapper foo.pc its source template is foo.pc.in
+# if $3 is non-empty then wrapper is marked exec
+define emit-deploy-wrapper
+$($1): $2 
+	$(MKDIR_P) '$$(@D)'
+	cp '$$<' '$$@'
+	$(if $3,chmod +x '$$@')
+
+endef
+
+# generating satellite assemblies
+
+culture_resources = $(foreach res, $(RESOURCES), $(if $(call is_cultured_resource,$(call get_resource_name, $(res))),$(res)))
+cultures = $(sort $(foreach res, $(culture_resources), $(call get_culture,$(call get_resource_name,$(res)))))
+culture_resource_dependencies = $(BUILD_DIR)/$1/$(SATELLITE_ASSEMBLY_NAME): $(subst .resx,.resources,$2)
+culture_resource_commandlines = cmd_line_satellite_$1 += /embed:'$(subst .resx,.resources,$2)'
+build_satellite_assembly_list = $(cultures:%=$(BUILD_DIR)/%/$(SATELLITE_ASSEMBLY_NAME))
+build_culture_res_files = $(foreach res, $(culture_resources),$(call get_resource_name,$(res)))
+
+$(eval $(foreach res, $(culture_resources), $(eval $(call culture_resource_dependencies,$(call get_culture,$(call get_resource_name,$(res))),$(call get_resource_name,$(res))))))
+$(eval $(foreach res, $(culture_resources), $(eval $(call culture_resource_commandlines,$(call get_culture,$(call get_resource_name,$(res))),$(res)))))
+
+AL = al2
+gen_AL_OUT_ARG = /out:'$1'
+gen_AL_CULTURE_ARG = /culture:$1
+AL_TARGET_PREFIX = /target:
+AL_TARGET_LIBRARY = $(AL_TARGET_PREFIX)library
+AL_TARGET_EXE = $(AL_TARGET_PREFIX)exe
+
+$(build_satellite_assembly_list): $(BUILD_DIR)/%/$(SATELLITE_ASSEMBLY_NAME):
+	$(MKDIR_P) '$(@D)'
+	$(AL) $(call gen_AL_OUT_ARG,$@) $(AL_TARGET_LIBRARY) $(call gen_AL_CULTURE_ARG,$*) $(cmd_line_satellite_$*)
+
+ASSEMBLY = $(BUILD_DIR)/$(ASSEMBLY_BASENAME).$(if $(exe_target),exe,dll)
+LINUX_PKGCONFIG = $(if $(library_target),$(BUILD_DIR)/$(LINUX_PKGCONFIG_NAME))
+LINUX_PKGCONFIG_IN = $(if $(library_target),$(LINUX_PKGCONFIG_NAME).in)
+LINUX_PKGCONFIG_NAME = $(if $(library_target),$(PKG_NAME).pc)
+ASSEMBLY_WRAPPER = $(if $(exe_target),$(BUILD_DIR)/$(ASSEMBLY_WRAPPER_NAME))
+ASSEMBLY_WRAPPER_IN = $(if $(exe_target),$(ASSEMBLY_WRAPPER_NAME).in)
+ASSEMBLY_WRAPPER_NAME = $(if $(exe_target),$(PKG_NAME))
+$(eval $(if $(library_target),$(call emit-deploy-wrapper,LINUX_PKGCONFIG,$(LINUX_PKGCONFIG_NAME))))
+$(eval $(if $(exe_target),$(call emit-deploy-wrapper,ASSEMBLY_WRAPPER,$(ASSEMBLY_WRAPPER_NAME),x)))
+console_target = $(filter console,$(COMPILE_TARGET))
+windows_target = $(filter windows,$(COMPILE_TARGET))
+library_target = $(filter library,$(COMPILE_TARGET))
+exe_target = $(or $(console_target),$(windows_target))
+bool_not = $(if $1,,x)
+invalid_target = $(or $(and $(call bool_not,$(console_target)),$(call bool_not,$(windows_target)),$(call bool_not,$(library_target))),$(and $(exe_target),$(library_target)),$(and $(console_target),$(windows_target)),$(filter-out console windows library,$(COMPILE_TARGET)))
+$(eval $(if $(invalid_target),$(error the value $(COMPILE_TARGET) is invalid for COMPILE_TARGET)))
+
+CSC_TARGET_ARG = $(CSC_TARGET_PREFIX)$(if $(console_target),$(CSC_CONSOLE_TARGET),$(if $(windows_target),$(CSC_WINDOWS_TARGET),$(CSC_LIBRARY_TARGET)))
+NCC_TARGET_ARG = $(NCC_TARGET_PREFIX)$(if $(console_target),$(NCC_CONSOLE_TARGET),$(if $(windows_target),$(NCC_WINDOWS_TARGET),$(NCC_LIBRARY_TARGET)))
+CSC_OUT_ARG = $(call gen_CSC_OUT_ARG,$(ASSEMBLY))
+NCC_OUT_ARG = $(call gen_NCC_OUT_ARG,$(ASSEMBLY))
+CSC_STRONGNAME = $(if $(SNK_FILE),$(call gen_CSC_SNK_ARG,$(call windows_path,$(SNK_FILE))) $(CSC_NO_DELAYSIGN))
+NCC_STRONGNAME = $(if $(SNK_FILE),$(call gen_NCC_SNK_ARG,$(call windows_path,$(SNK_FILE))) $(NCC_NO_DELAYSIGN))
+
+BUILD_DIR = $(top_builddir)/bin
+SATELLITE_ASSEMBLY_NAME=$(ASSEMBLY_BASENAME).resources.dll
+
+PKG_NAME = $(shell echo $(ASSEMBLY_BASENAME) | $(TR) A-Z a-z)
+ASSEMBLY_BASENAME = $(notdir $(abs_srcdir))
+
+if ENABLE_DEBUG
+ASSEMBLY_MDB = $(ASSEMBLY).mdb
+endif
+if ENABLE_RELEASE
+ASSEMBLY_MDB =
+endif
+
+$(if $(word 2,$(abs_srcdir)),$(error whitespaces in srcdir are not supported))
+$(if $(word 2,$(abs_builddir)),$(error whitespaces in builddir are not supported))
+
+RESGEN = resgen2
+
+$(build_resx_resources) : %.resources: %.resx
+	$(RESGEN) '$<' '$@'
+
+$(ASSEMBLY) $(ASSEMBLY_MDB): $(build_sources) $(build_resources) $(build_datafiles) $(DLL_REFERENCES) $(PROJECT_REFERENCES) $(MACRO_PROJECT_REFERENCES) $(build_satellite_assembly_list)
+	$(MKDIR_P) '$(dir $(ASSEMBLY))'
+	$($(ASSEMBLY_COMPILER)) $(call windows_path_sep,$($(ASSEMBLY_COMPILER)_OUT_ARG) $($(ASSEMBLY_COMPILER)_TARGET_ARG) $($(ASSEMBLY_COMPILER)_ALL_ARGS) $(build_sources_embed) $(build_resources_embed) $(build_references_ref))
+
+define gen_docsrc_rule
+$(builddir)/doc/$1/src/stamp: $2
+	$(MKDIR_P) '$$(@D)'
+	@rm -f '$$@~'
+	@touch '$$@~'
+	$(MDOC) update --delete -o '$$(@D)' $$(foreach file,$$^,'$$(file)')
+	@mv -f '$$@~' '$$@'
+
+if ENABLE_UPDATE_DOCSRC
+$(builddir)/doc/$1/src/*.xml $(builddir)/doc/$1/src/*/*.xml: $(builddir)/doc/$1/src/stamp
+endif
+
+endef
+
+define gen_doc_mdoc_rule
+$(builddir)/doc/$1/mdoc/stamp: $$(doc_$1_src_files)
+	$(MKDIR_P) '$$(@D)'
+	@rm -f '$$@~'
+	@touch '$$@~'
+	$(MDOC) assemble -f ecma -o '$$(@D)/$(PKG_NAME)' '$(srcdir)/doc/$1/src'
+	echo $$$$'<?xml version="1.0"?>\n<monodoc>\n  <source provider="ecma" basefile="$(PKG_NAME)" path="various"/>\n</monodoc>' >$$(@D)/$(PKG_NAME).source
+	@mv -f '$$@~' '$$@'
+
+$(builddir)/doc/$1/mdoc/$(PKG_NAME).zip $(builddir)/doc/$1/mdoc/$(PKG_NAME).tree $(builddir)/doc/$1/mdoc/$(PKG_NAME).source: $(builddir)/doc/$1/mdoc/stamp
+
+endef
+
+define gen_doc_html_rule
+$(builddir)/doc/$1/html/stamp: $$(doc_$1_src_files)
+	$(MKDIR_P) '$$(@D)'
+	@rm -f '$$@~'
+	@touch '$$@~'
+	$(MDOC) export-html --ext=html -o '$$(@D)' '$(srcdir)/doc/$1/src'
+	@mv -f '$$@~' '$$@'
+
+$(builddir)/doc/$1/html/*.html $(builddir)/doc/$1/html/*/*.html: $(builddir)/doc/$1/html/stamp
+
+endef
+
+empty__ =
+tab__ = $(empty__)	$(empty__)
+define newline__
+$(empty__)
+
+endef
+
+$(if $(ASSEMBLY),$(foreach doc_lang,$(doc_langs),$(eval $(call gen_docsrc_rule,$(doc_lang),$(ASSEMBLY)))))
+$(if $(ASSEMBLY),$(foreach doc_lang,$(doc_langs),$(eval doc_$(doc_lang)_src_files = $(srcdir)/doc/$(doc_lang)/src/*.xml $(srcdir)/doc/$(doc_lang)/src/*/*.xml$(newline__))))
+$(if $(ASSEMBLY),$(foreach doc_lang,$(doc_langs),$(eval $(call gen_doc_mdoc_rule,$(doc_lang)))))
+$(if $(ASSEMBLY),$(foreach doc_lang,$(doc_langs),$(eval $(call gen_doc_html_rule,$(doc_lang)))))
+
+EXTRA_DIST += $(if $(ASSEMBLY),$(foreach doc_lang,$(doc_langs),$(srcdir)/doc/$(doc_lang)/src/stamp $(srcdir)/doc/$(doc_lang)/src/*.xml $(srcdir)/doc/$(doc_lang)/src/*/*.xml))
+
+doc_langs = $(patsubst $(srcdir)/doc/%/src,%,$(wildcard $(srcdir)/doc/*/src))
+docsrc: $(foreach doc_lang,$(doc_langs),$(builddir)/doc/$(doc_lang)/src/stamp)
+doc: doc-mdoc doc-html
+doc-mdoc: $(foreach doc_lang,$(doc_langs),$(builddir)/doc/$(doc_lang)/mdoc/stamp)
+doc-html: $(foreach doc_lang,$(doc_langs),$(builddir)/doc/$(doc_lang)/html/stamp)
+
+force-docsrc:
+	@rm -f $(builddir)/doc/*/src/stamp
+	$(MAKE) docsrc
+
+.PHONY: docsrc force-docsrc doc doc-mdoc doc-html inst-doc-html
+
+clean-local:
+	$(if $(doc_langs),rm -r -f $(foreach doc_lang,$(doc_langs),'$(builddir)/doc/$(doc_lang)/mdoc/' '$(builddir)/doc/$(doc_lang)/html/'),true)
+
+distclean-local:
+	rm -r -f '$(builddir)/bin' '$(builddir)/obj'
+
+def_doc_lang = $(if $(filter en,$(doc_langs)),en,$(if $(filter de,$(doc_langs)),de,$(firstword $(doc_langs))))
+html_doc_dirs = $(if $(def_doc_lang),$(sort $(foreach html_file,$(wildcard $(builddir)/doc/$(def_doc_lang)/html/*/*.html),$(patsubst $(builddir)/doc/$(def_doc_lang)/html/%/$(notdir $(html_file)),%,$(html_file)))))
+
+pkg_htmldir = $(htmldir)/$(PKG_NAME)
+each_html = $(foreach html_file,$(wildcard $1/*.html),$(notdir $(html_file)))
+inst_each_html_from_to = $(foreach html_file,$(call each_html,$1),$(INSTALL) -m 644 '$1/$(html_file)' '$2/$(html_file)'$(newline__)$(tab__))
+inst_each_html = $(call inst_each_html_from_to,$(builddir)/doc/$(def_doc_lang)/html,$(DESTDIR)$(pkg_htmldir))$(foreach html_dir,$(html_doc_dirs),$(call inst_each_html_from_to,$(builddir)/doc/$(def_doc_lang)/html/$(html_dir),$(DESTDIR)$(pkg_htmldir)/$(html_dir)))
+uninst_each_html_from = $(foreach html_file,$(call each_html,$1),rm -f '$2/$(html_file)'$(newline__)$(tab__))
+uninst_each_html = $(call uninst_each_html_from,$(builddir)/doc/$(def_doc_lang)/html,$(DESTDIR)$(pkg_htmldir))$(foreach html_dir,$(html_doc_dirs),$(call uninst_each_html_from,$(builddir)/doc/$(def_doc_lang)/html/$(html_dir),$(DESTDIR)$(pkg_htmldir)/$(html_dir)))
+
+define gen_inst_doc_html
+inst-doc-html: doc-html
+	$(if $(def_doc_lang),$(INSTALL) -d -m 755 '$(DESTDIR)$(pkg_htmldir)' $(foreach ddir,$(html_doc_dirs),'$(DESTDIR)$(pkg_htmldir)/$(ddir)'))
+	$(inst_each_html)@true
+
+uninst-doc-html:
+	$(uninst_each_html)@true
+	$(if $(def_doc_lang),-rmdir $(foreach ddir,$(html_doc_dirs),'$(DESTDIR)$(pkg_htmldir)/$(ddir)') '$(DESTDIR)$(pkg_htmldir)')
+
+endef
+
+$(eval $(gen_inst_doc_html))
+
+DOC_TARGETS =
+if ENABLE_UPDATE_DOCSRC
+DOC_TARGETS += docsrc
+endif
+if ENABLE_DOC
+DOC_TARGETS += doc
+
+monodocsourcesdir = $(MONODOC_SOURCES_DIR)
+monodocsources_DATA = $(if $(and $(MONODOC_SOURCES_DIR),$(def_doc_lang)),$(builddir)/doc/$(def_doc_lang)/mdoc/$(PKG_NAME).zip $(builddir)/doc/$(def_doc_lang)/mdoc/$(PKG_NAME).tree $(builddir)/doc/$(def_doc_lang)/mdoc/$(PKG_NAME).source)
+
+install-data-local: inst-doc-html
+uninstall-local: uninst-doc-html
+else
+monodocsourcesdir =
+monodocsources_DATA =
+
+install-data-local:
+uninstall-local:
+endif
+
+define gen_no_gac
+inst-gac:
+uninst-gac:
+
+endef
+
+define gen_gac
+inst-gac:
+	$(GAC_UTIL) -i '$$(call windows_path,$(ASSEMBLY))'
+
+uninst-gac:
+	$(GAC_UTIL) -us '$$(call windows_path,$(ASSEMBLY))'
+
+endef
+
+$(if $(and $(library_target),$(call bool_not,$(NO_INST_ASSEMBLY))),$(eval $(gen_gac)),$(eval $(gen_no_gac)))
+
+if ENABLE_GAC
+install-exec-local: inst-gac
+uninstall-local: uninst-gac
+else
+install-exec-local:
+uninstall-local:
+endif

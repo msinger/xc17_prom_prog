@@ -1,0 +1,49 @@
+#!/bin/bash
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+libexecdir=@libexecdir@
+
+MONO_EXEC="exec -a xc17_prom_prog mono"
+EXE_PATH="${libexecdir}/@PACKAGE@/xc17_prom_prog.exe"
+
+FORCE_DEBUG=yes
+
+for arg in "$@"; do
+	case "x$arg" in
+		x--profile*)
+			MONO_OPTIONS+=("$arg")
+			shift
+			;;
+		x--debug*)
+			unset FORCE_DEBUG
+			MONO_OPTIONS+=("$arg")
+			shift
+			;;
+		x--trace*)
+			MONO_OPTIONS+=("$arg")
+			shift
+			;;
+		x--no-debug)
+			unset FORCE_DEBUG
+			shift
+			;;
+		xdebug)
+			unset FORCE_DEBUG
+			MONO_OPTIONS+=("--debug")
+			ARGS+=("debug")
+			shift
+			;;
+		*)
+			ARGS+=("$arg")
+			shift
+			;;
+	esac
+done
+
+if [ -z FORCE_DEBUG ]; then
+	MONO_OPTIONS+=("--debug")
+fi
+
+$MONO_EXEC "${MONO_OPTIONS[@]}" "$EXE_PATH" "${ARGS[@]}"
