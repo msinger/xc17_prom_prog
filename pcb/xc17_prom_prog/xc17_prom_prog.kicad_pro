@@ -707,12 +707,16 @@
       "FPGA Power"
     ],
     [
-      "4386c87e-0289-4ca9-b4f1-828ed0f2da9a",
-      "PROM Power"
-    ],
-    [
       "a8f52001-7a25-4283-bdf4-2dead0af6825",
       "FPGA"
+    ],
+    [
+      "9602127b-3234-4151-9f61-33213634d411",
+      "PROM Power Gen"
+    ],
+    [
+      "4386c87e-0289-4ca9-b4f1-828ed0f2da9a",
+      "PROM Power Switch"
     ],
     [
       "43172acb-73d1-430e-bac0-31c53bbc6dab",
