@@ -24,14 +24,17 @@ set_io led[7]    B4
 set_io led[8]    B5
 
 # Voltage select
-set_io vcc_3v3   E16
-set_io vcc_5v    F16
-set_io vpp_3v3   E14
-set_io vpp_3v7   D16
-set_io vpp_5v    C16
-set_io vpp_5v4   B16
-set_io vpp_12v25 D14
-set_io prom_off  D15
+set_io vcc_gnd        D15
+set_io vcc_3v3        E16
+set_io vcc_5v         F16
+set_io vpp_gnd        E14
+set_io vpp_gnd_weak   F15
+set_io vpp_3v3        H14
+set_io vpp_3v7        D16
+set_io vpp_5v         C16
+set_io vpp_5v4        B16
+set_io vpp_12v25      D14
+set_io vpp_12v25_weak G15
 
 # Level shifter DIR and /OE
 set_io dir       N16

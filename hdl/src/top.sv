@@ -16,14 +16,17 @@ module top(
 
 		output logic [`NUM_LEDS-1:0] led,
 
+		output logic vcc_gnd,
 		output logic vcc_3v3,
 		output logic vcc_5v,
+		output logic vpp_gnd,
+		output logic vpp_gnd_weak,
 		output logic vpp_3v3,
 		output logic vpp_3v7,
 		output logic vpp_5v,
 		output logic vpp_5v4,
 		output logic vpp_12v25,
-		output logic prom_off,
+		output logic vpp_12v25_weak,
 
 		output logic dir,
 		output logic n_oe,
@@ -47,7 +50,8 @@ module top(
 			led[0] <= 0;
 		else
 			led_delay++;
-		if (vcc_3v3 || vcc_5v || vpp_3v3 || vpp_3v7 || vpp_5v || vpp_5v4 || vpp_12v25 || prom_off) begin
+		if (vcc_gnd || vcc_3v3 || vcc_5v ||
+		    vpp_gnd || vpp_gnd_weak || vpp_3v3 || vpp_3v7 || vpp_5v || vpp_5v4 || vpp_12v25 || vpp_12v25_weak) begin
 			led[0]    <= 1;
 			led_delay  = 0;
 		end
@@ -86,14 +90,17 @@ module top(
 	initial data_out  = 0;
 	initial data_ena  = 0;
 
-	initial vcc_3v3   = 0;
-	initial vcc_5v    = 0;
-	initial vpp_3v3   = 0;
-	initial vpp_3v7   = 0;
-	initial vpp_5v    = 0;
-	initial vpp_5v4   = 0;
-	initial vpp_12v25 = 0;
-	initial prom_off  = 0;
+	initial vcc_gnd        = 0;
+	initial vcc_3v3        = 0;
+	initial vcc_5v         = 0;
+	initial vpp_gnd        = 0;
+	initial vpp_gnd_weak   = 0;
+	initial vpp_3v3        = 0;
+	initial vpp_3v7        = 0;
+	initial vpp_5v         = 0;
+	initial vpp_5v4        = 0;
+	initial vpp_12v25      = 0;
+	initial vpp_12v25_weak = 0;
 
 	typedef logic [1:0]  pstate_t;
 	typedef logic [1:0]  pmode_t;
@@ -182,23 +189,26 @@ module top(
 	initial inv_reset  = 0;
 
 	task automatic disable_vcc();
+		vcc_gnd <= 0;
 		vcc_3v3 <= 0;
 		vcc_5v  <= 0;
 	endtask
 
 	task automatic disable_vpp();
-		vpp_3v3   <= 0;
-		vpp_3v7   <= 0;
-		vpp_5v    <= 0;
-		vpp_5v4   <= 0;
-		vpp_12v25 <= 0;
+		vpp_gnd        <= 0;
+		vpp_gnd_weak   <= 0;
+		vpp_3v3        <= 0;
+		vpp_3v7        <= 0;
+		vpp_5v         <= 0;
+		vpp_5v4        <= 0;
+		vpp_12v25      <= 0;
+		vpp_12v25_weak <= 0;
 	endtask
 
 	task automatic disable_all();
 		disable_vcc;
 		disable_vpp;
-		prom_off <= 0;
-		pmode     = pmode_off;
+		pmode = pmode_off;
 	endtask
 
 	task automatic pwr_read();
@@ -304,14 +314,17 @@ module top(
 						p_result  <= 1;
 						disable_all;
 						unique0 case (parg)
-							1: vcc_3v3   <= 1;
-							2: vcc_5v    <= 1;
-							3: vpp_3v3   <= 1;
-							4: vpp_3v7   <= 1;
-							5: vpp_5v    <= 1;
-							6: vpp_5v4   <= 1;
-							7: vpp_12v25 <= 1;
-							8: prom_off  <= 1;
+							1:  vcc_gnd        <= 1;
+							2:  vcc_3v3        <= 1;
+							3:  vcc_5v         <= 1;
+							4:  vpp_gnd        <= 1;
+							5:  vpp_gnd_weak   <= 1;
+							6:  vpp_3v3        <= 1;
+							7:  vpp_3v7        <= 1;
+							8:  vpp_5v         <= 1;
+							9:  vpp_5v4        <= 1;
+							10: vpp_12v25      <= 1;
+							11: vpp_12v25_weak <= 1;
 						endcase
 					end
 				pcmd_config_prom:
@@ -358,9 +371,15 @@ module top(
 					1000*us:
 						disable_all;
 					1005*us:
-						prom_off <= 1;
+						begin
+							vcc_gnd <= 1;
+							vpp_gnd <= 1;
+						end
 					2000*us:
-						prom_off <= 0;
+						begin
+							vcc_gnd <= 0;
+							vpp_gnd <= 0;
+						end
 					2005*us:
 						begin
 							pstate    = pstate_idle;

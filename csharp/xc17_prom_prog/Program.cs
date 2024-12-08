@@ -134,15 +134,18 @@ namespace xc17_prom_prog
 				int voltage_arg;
 				switch (test_voltage)
 				{
-					case "off":       voltage_arg = 0; break;
-					case "vcc-3v3":   voltage_arg = 1; break;
-					case "vcc-5v":    voltage_arg = 2; break;
-					case "vpp-3v3":   voltage_arg = 3; break;
-					case "vpp-3v7":   voltage_arg = 4; break;
-					case "vpp-5v":    voltage_arg = 5; break;
-					case "vpp-5v4":   voltage_arg = 6; break;
-					case "vpp-12v25": voltage_arg = 7; break;
-					case "gnd":       voltage_arg = 8; break;
+					case "off":            voltage_arg =  0; break;
+					case "vcc-gnd":        voltage_arg =  1; break;
+					case "vcc-3v3":        voltage_arg =  2; break;
+					case "vcc-5v":         voltage_arg =  3; break;
+					case "vpp-gnd":        voltage_arg =  4; break;
+					case "vpp-gnd-weak":   voltage_arg =  5; break;
+					case "vpp-3v3":        voltage_arg =  6; break;
+					case "vpp-3v7":        voltage_arg =  7; break;
+					case "vpp-5v":         voltage_arg =  8; break;
+					case "vpp-5v4":        voltage_arg =  9; break;
+					case "vpp-12v25":      voltage_arg = 10; break;
+					case "vpp-12v25-weak": voltage_arg = 11; break;
 					default: Usage(Console.Error);     return 2;
 				}
 				prog.TestVoltage(voltage_arg);
@@ -181,8 +184,8 @@ namespace xc17_prom_prog
 			o.WriteLine("  --test-echo             Tests communication and BRAM buffers on programmer.");
 			o.WriteLine("  --test-voltage VOLTAGE  Don't use this option when a PROM is inserted! Switch on a single");
 			o.WriteLine("                          supply VOLTAGE and switch off all others for testing. VOLTAGE can");
-			o.WriteLine("                          be one of vcc-3v3, vcc-5v, vpp-3v3, vpp-3v7, vpp-5v, vpp-5v4,");
-			o.WriteLine("                          vpp-12v25, gnd, off.");
+			o.WriteLine("                          be one of vcc-gnd, vcc-3v3, vcc-5v, vpp-gnd, vpp-gnd-weak, vpp-3v3,");
+			o.WriteLine("                          vpp-3v7, vpp-5v, vpp-5v4, vpp-12v25, vpp-12v25-weak, off.");
 			o.WriteLine("  --detect                Just detect the presence of the PROM chip.");
 			o.WriteLine("Supported values for PROM:");
 			o.Write(" ");
