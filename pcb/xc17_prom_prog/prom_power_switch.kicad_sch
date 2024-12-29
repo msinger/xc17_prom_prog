@@ -6,7 +6,7 @@
 	(paper "A4")
 	(title_block
 		(title "XC17xxx PROM Programmer")
-		(date "2024-12-08")
+		(date "2024-12-29")
 		(rev "2")
 		(company "CC-BY-SA-4.0 Michael Singer")
 		(comment 1 "https://github.com/msinger/xc17_prom_prog/")
@@ -4105,7 +4105,7 @@
 				)
 			)
 		)
-		(property "Value" "0"
+		(property "Value" "1.5"
 			(at 107.95 170.18 90)
 			(effects
 				(font
@@ -6434,7 +6434,7 @@
 				)
 			)
 		)
-		(property "Value" "0"
+		(property "Value" "1.5"
 			(at 133.35 60.96 90)
 			(effects
 				(font
@@ -7975,7 +7975,7 @@
 				)
 			)
 		)
-		(property "Value" "0"
+		(property "Value" "1.5"
 			(at 133.35 115.57 90)
 			(effects
 				(font
@@ -8259,7 +8259,7 @@
 				)
 			)
 		)
-		(property "Value" "0"
+		(property "Value" "1.5"
 			(at 60.96 115.57 90)
 			(effects
 				(font
@@ -9013,7 +9013,7 @@
 				)
 			)
 		)
-		(property "Value" "0"
+		(property "Value" "1.5"
 			(at 115.57 115.57 90)
 			(effects
 				(font
@@ -9220,7 +9220,7 @@
 				)
 			)
 		)
-		(property "Value" "0"
+		(property "Value" "1.5"
 			(at 90.17 170.18 90)
 			(effects
 				(font
@@ -10995,7 +10995,7 @@
 				)
 			)
 		)
-		(property "Value" "1.5"
+		(property "Value" "47"
 			(at 246.38 78.74 90)
 			(effects
 				(font

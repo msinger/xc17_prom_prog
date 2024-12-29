@@ -9,7 +9,7 @@
 	(paper "A4")
 	(title_block
 		(title "XC17xxx PROM Programmer")
-		(date "2024-12-08")
+		(date "2024-12-29")
 		(rev "2")
 		(company "CC-BY-SA-4.0 Michael Singer")
 		(comment 1 "https://github.com/msinger/xc17_prom_prog/")
@@ -1581,7 +1581,7 @@
 				)
 			)
 		)
-		(property "Value" "0"
+		(property "Value" "1.5"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "9455d382-e44e-4781-bef7-61ae1671339c")
@@ -16208,7 +16208,7 @@
 				)
 			)
 		)
-		(property "Value" "1.5"
+		(property "Value" "47"
 			(at 0 1.43 0)
 			(layer "F.Fab")
 			(uuid "195dd8b3-cdec-4613-904a-3438953ce7d4")
@@ -17421,7 +17421,7 @@
 				)
 			)
 		)
-		(property "Value" "0"
+		(property "Value" "1.5"
 			(at 0 -1.4 90)
 			(layer "F.Fab")
 			(uuid "8f799ced-8d9b-4709-a8a2-bf65d8ff5a88")
@@ -17634,7 +17634,7 @@
 				)
 			)
 		)
-		(property "Value" "0"
+		(property "Value" "1.5"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "9eb595bf-f7c3-4d9c-9671-c0dfabd3f31a")
@@ -26872,7 +26872,7 @@
 				)
 			)
 		)
-		(property "Value" "0"
+		(property "Value" "1.5"
 			(at -0.025 -1.4 90)
 			(layer "F.Fab")
 			(uuid "329bc006-e9b3-4e59-88f9-a832a2090f6f")
@@ -28888,7 +28888,7 @@
 				)
 			)
 		)
-		(property "Value" "0"
+		(property "Value" "1.5"
 			(at 0 1.43 90)
 			(layer "F.Fab")
 			(uuid "314273be-49eb-4434-a059-104fefb91370")
@@ -58827,7 +58827,7 @@
 				)
 			)
 		)
-		(property "Value" "0"
+		(property "Value" "1.5"
 			(at 0.075 -1.4 90)
 			(layer "F.Fab")
 			(uuid "c0f4d34a-bb7c-4e0c-a48e-2b2fe54fcdd3")

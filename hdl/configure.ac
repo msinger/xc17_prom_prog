@@ -29,14 +29,14 @@ if test "x$enable_board" = "xxc17_prom_prog"; then
 	FPGA_CORE=hx1k
 	FPGA_PACKAGE=vq100
 	NUM_LEDS=1
-	HW_VERSION=1
+	HW_VERSION=2
 	HW_TYPE=1
 fi
 if test "x$enable_board" = "xhx8k_brk"; then
 	FPGA_CORE=hx8k
 	FPGA_PACKAGE=ct256
 	NUM_LEDS=9
-	HW_VERSION=1
+	HW_VERSION=2
 	HW_TYPE=2
 fi
 

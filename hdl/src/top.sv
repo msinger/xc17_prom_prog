@@ -456,23 +456,36 @@ module top(
 						pwr_prog;
 					1000*us:
 						disable_vpp;
-					1001*us:
-						vpp_12v25 <= 1;
-					1051*us:
+					1004*us:
+						vpp_12v25_weak <= 1;
+					1010*us:
 						clk <= 1;
-					1052*us:
+					1011*us:
 						clk <= 0;
-					1053*us:
+					1012*us:
 						clk <= 1;
-					1054*us:
+					1013*us:
 						disable_vpp;
-					1055*us:
+					1017*us:
+						begin
+							vpp_gnd_weak <= 1;
+							vpp_gnd      <= 1;
+						end
+					1019*us:
+						vpp_gnd <= 0;
+					1022*us:
 						pwr_vpp_nominal;
-					1505*us:
+					1024*us:
+						if (dev5v_prog)
+							vpp_gnd_weak <= 0;
+					1028*us:
+						if (!dev5v_prog)
+							vpp_gnd_weak <= 0;
+					1100*us:
 						clk <= 0;
-					1506*us:
+					1101*us:
 						clk <= 1;
-					1507*us:
+					6000*us:
 						begin
 							pstate    = pstate_idle;
 							ack       = 1;
