@@ -18,6 +18,8 @@ namespace xc17_prom_prog
 		private const byte ResultData     = 0x1a;
 		private const byte ResultAsync    = 0x16;
 		private const byte ResultBusy     = 0x07;
+		private const byte ResultCeo      = 0x04;
+		private const byte ResultEarlyCeo = 0x14;
 		private const byte CmdReadBuffer  = 0x01;
 		private const byte CmdWriteBuffer = 0x81;
 		private const byte CmdPoll        = 0x02;
@@ -29,10 +31,67 @@ namespace xc17_prom_prog
 		private const byte CmdPwrOnRead   = 0x08;
 		private const byte CmdPwrOnVerify = 0x09;
 		private const byte CmdPwrOnProg   = 0x0a;
-		private const byte CmdProgInc     = 0x0b;
-		private const byte CmdProgVerify  = 0x0c;
+		private const byte CmdRead        = 0x0b;
+		private const byte CmdProgInc     = 0x0c;
+		private const byte CmdProgVerify  = 0x0d;
 
 		private PromInfo prom;
+
+		public void Read(BinaryWriter w, bool invReset)
+		{
+			if (prom.Density == 0)
+				throw new InvalidOperationException("Need to configure PROM first.");
+			int   length     = (prom.Density + 7) / 8;
+			int   prevLength = 0;
+			bool  odd        = false;
+			int   blockSize  = BufferSize / 2;
+			int[] offset     = new int[] { 0, blockSize / OffsetStep };
+			bool  first      = true;
+			bool  earlyCeo   = false;
+			bool  ceo        = false;
+			PowerOnRead(invReset);
+			while (true)
+			{
+				if (!first)
+				{
+					switch (Poll())
+					{
+					case ResultAck:
+						break;
+					case ResultCeo:
+						if (length > 0)
+							earlyCeo = true;
+						else
+							ceo = true;
+						break;
+					case ResultEarlyCeo:
+						earlyCeo = true;
+						break;
+					default:
+						throw new InvalidResponseException("No acknowledge");
+					}
+				}
+				if (length > 0)
+					AsyncReadToBuffer(offset[odd ? 1 : 0], (length > blockSize) ? blockSize : length);
+				if (!first)
+				{
+					byte[] buf = ReadBuffer(offset[odd ? 0 : 1], prevLength);
+					w.Write(buf);
+				}
+				if (length <= 0)
+					break;
+				first = false;
+				prevLength = (length > blockSize) ? blockSize : length;
+				length -= blockSize;
+				odd = !odd;
+			}
+			PowerOff();
+			w.Flush();
+			if (earlyCeo)
+				throw new InvalidResponseException("Early CEO");
+			if (!ceo)
+				throw new InvalidResponseException("No CEO");
+		}
 
 		public void VerifyDeviceID()
 		{
@@ -41,18 +100,33 @@ namespace xc17_prom_prog
 			PowerOnProg();
 			ProgIncrement(prom.ClockToID);
 			byte[] buf = ProgVerify();
+			buf[0] = (byte)((buf[0] & 0x55) << 1 | (buf[0] & 0xaa) >> 1);
+			buf[0] = (byte)((buf[0] & 0x33) << 2 | (buf[0] & 0xcc) >> 2);
+			buf[0] = (byte)((buf[0] & 0x0f) << 4 | (buf[0] & 0xf0) >> 4);
+			buf[1] = (byte)((buf[1] & 0x55) << 1 | (buf[1] & 0xaa) >> 1);
+			buf[1] = (byte)((buf[1] & 0x33) << 2 | (buf[1] & 0xcc) >> 2);
+			buf[1] = (byte)((buf[1] & 0x0f) << 4 | (buf[1] & 0xf0) >> 4);
 			PowerOff();
-			log.WriteLine(buf[0].ToString("x2"));
-			log.WriteLine(buf[1].ToString("x2"));
-			log.WriteLine(buf[2].ToString("x2"));
-			log.WriteLine(buf[3].ToString("x2"));
-			if (prom.Device64Bit)
-			{
-				log.WriteLine(buf[4].ToString("x2"));
-				log.WriteLine(buf[5].ToString("x2"));
-				log.WriteLine(buf[6].ToString("x2"));
-				log.WriteLine(buf[7].ToString("x2"));
-			}
+			if (buf[0] != 0xc9)
+				throw new InvalidResponseException("Read manufacturer ID (0x" + buf[0].ToString("x2") +
+				                                   ") does not match Xilinx ID (0xc9).");
+			if (buf[1] != prom.Code)
+				throw new InvalidResponseException("Read device ID (0x" + buf[1].ToString("x2") +
+				                                   ") does not match " + prom.Type + " (0x" +
+				                                   prom.Code.ToString("x2") + ").");
+		}
+
+		public bool IsResetInverted()
+		{
+			if (prom.ClockToReset == 0)
+				throw new InvalidOperationException("Need to configure PROM first.");
+			PowerOnProg();
+			ProgIncrement(prom.ClockToReset, true);
+			byte[] buf = ProgVerify(true);
+			PowerOff();
+			if ((buf[0] != 0 && buf[0] != 0xff) || buf[0] != buf[1] || buf[0] != buf[2] || buf[0] != buf[3])
+				throw new InvalidResponseException("Inconsistent reset polarity.");
+			return buf[0] == 0;
 		}
 
 		public PromInfo Prom
@@ -96,14 +170,14 @@ namespace xc17_prom_prog
 			SendCmdSynced(CmdPwrOff, 0, 0, 0, 0, true);
 		}
 
-		private void PowerOnRead(bool inv_reset = false)
+		private void PowerOnRead(bool invReset = false)
 		{
-			SendCmdSynced(CmdPwrOnRead, (byte)(inv_reset ? 0x01 : 0x00), 0, 0, 0, true);
+			SendCmdSynced(CmdPwrOnRead, (byte)(invReset ? 0x01 : 0x00), 0, 0, 0, true);
 		}
 
-		private void PowerOnVerify(bool inv_reset = false)
+		private void PowerOnVerify(bool invReset = false)
 		{
-			SendCmdSynced(CmdPwrOnVerify, (byte)(inv_reset ? 0x01 : 0x00), 0, 0, 0, true);
+			SendCmdSynced(CmdPwrOnVerify, (byte)(invReset ? 0x01 : 0x00), 0, 0, 0, true);
 		}
 
 		private void PowerOnProg()
@@ -111,18 +185,39 @@ namespace xc17_prom_prog
 			SendCmdSynced(CmdPwrOnProg, 0, 0, 0, 0, true);
 		}
 
-		private void ProgIncrement(int count = 1, bool sense_reset = false)
+		private void AsyncReadToBuffer(int offset, int length)
+		{
+			if (offset < 0 || offset >= BufferSize / OffsetStep)
+				throw new ArgumentException("", "offset");
+			if (length <= 0 || length > BufferSize)
+				throw new ArgumentException("", "length");
+			int wordCount = length / (prom.Device64Bit ? 8 : 4);
+			if (wordCount * (prom.Device64Bit ? 8 : 4) != length)
+				throw new ArgumentException("", "length");
+			int offsetInByte = offset * OffsetStep;
+			if (length > BufferSize - offsetInByte)
+				throw new ArgumentException();
+			byte arg0, arg1;
+			arg0  = (byte)(wordCount & 0xff);
+			arg1  = (byte)((wordCount >> 8) & 0x03);
+			arg1 |= (byte)((offset & 0x0f) << 2);
+			byte result = SendCmd(CmdRead, arg0, arg1, 0, 0);
+			if (result != ResultAsync)
+				throw new InvalidResponseException();
+		}
+
+		private void ProgIncrement(int count = 1, bool senseReset = false)
 		{
 			SendCmdSynced(CmdProgInc, (byte)(count & 0xff),
 			                          (byte)((count >> 8) & 0xff),
 			                          (byte)((count >> 16) & 0x01),
-			                          (byte)(sense_reset ? 0x01 : 0x00),
+			                          (byte)(senseReset ? 0x01 : 0x00),
 			                          true);
 		}
 
-		private byte[] ProgVerify(bool sense_reset = false)
+		private byte[] ProgVerify(bool senseReset = false)
 		{
-			SendCmdSynced(CmdProgVerify, 0, 0, 0, (byte)(sense_reset ? 0x01 : 0x00), true);
+			SendCmdSynced(CmdProgVerify, 0, 0, 0, (byte)(senseReset ? 0x01 : 0x00), true);
 			return ReadBuffer(0, prom.Device64Bit ? 8 : 4);
 		}
 
@@ -316,14 +411,12 @@ namespace xc17_prom_prog
 		}
 
 		private readonly TextWriter log;
-		private readonly TextWriter err;
 
-		public PromProgrammer(string port, TextWriter log, TextWriter err)
+		public PromProgrammer(string port, TextWriter log)
 		{
 			this.prom = new PromInfo();
 			this.port = port;
 			this.log = (log != null) ? log : TextWriter.Null;
-			this.err = (err != null) ? err : TextWriter.Null;
 			OpenPort();
 		}
 

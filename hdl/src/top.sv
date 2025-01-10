@@ -107,6 +107,7 @@ module top(
 	typedef logic [3:0]  pcmd_t;
 	typedef logic [31:0] parg_t;
 	typedef logic [16:0] pstep_t;
+	typedef logic [1:0]  presult_t;
 
 	localparam pstate_t pstate_idle        = 0;
 	localparam pstate_t pstate_proc        = 1;
@@ -126,15 +127,22 @@ module top(
 	localparam pcmd_t pcmd_pwron_read   = 5;
 	localparam pcmd_t pcmd_pwron_verify = 6;
 	localparam pcmd_t pcmd_pwron_prog   = 7;
-	localparam pcmd_t pcmd_prog_inc     = 8;
-	localparam pcmd_t pcmd_prog_verify  = 9;
+	localparam pcmd_t pcmd_read         = 8;
+	localparam pcmd_t pcmd_prog_inc     = 9;
+	localparam pcmd_t pcmd_prog_verify  = 10;
 
-	pstate_t pstate, next_pstate;
-	pmode_t  pmode;
-	pcmd_t   pcmd;
-	parg_t   parg;
-	logic    p_seq, p_ack, p_result, p_match;
-	pstep_t  pstep;
+	localparam presult_t presult_fail        = 0;
+	localparam presult_t presult_early_ceo   = 1;
+	localparam presult_t presult_success     = 2;
+	localparam presult_t presult_success_ceo = 3;
+
+	pstate_t  pstate, next_pstate;
+	pmode_t   pmode;
+	pcmd_t    pcmd;
+	parg_t    parg;
+	logic     p_seq, p_ack, p_match;
+	pstep_t   pstep;
+	presult_t presult;
 
 	/*
 	 * 5 volt device?
@@ -182,7 +190,7 @@ module top(
 	initial pmode      = pmode_off;
 	initial p_seq      = 0;
 	initial p_ack      = 0;
-	initial p_result   = 0;
+	initial presult    = presult_fail;
 	initial dev5v      = 0;
 	initial dev5v_prog = 0;
 	initial dev64bit   = 0;
@@ -301,17 +309,17 @@ module top(
 					begin
 						rbuf[byte_pos] <= wbuf[byte_pos];
 						if (byte_pos == 4095) begin
-							pstate    = pstate_idle;
-							ack       = 1;
-							p_result <= 1;
+							pstate   = pstate_idle;
+							ack      = 1;
+							presult <= presult_success;
 						end
 						byte_pos++;
 					end
 				pcmd_test_voltage:
 					begin
-						pstate     = pstate_idle;
-						ack        = 1;
-						p_result  <= 1;
+						pstate   = pstate_idle;
+						ack      = 1;
+						presult <= presult_success;
 						disable_all;
 						unique0 case (parg)
 							1:  vcc_gnd        <= 1;
@@ -331,7 +339,7 @@ module top(
 					begin
 						pstate      = pstate_idle;
 						ack         = 1;
-						p_result   <= 1;
+						presult    <= presult_success;
 						dev5v      <= parg[0];
 						dev5v_prog <= parg[1];
 						dev64bit   <= parg[2];
@@ -353,7 +361,7 @@ module top(
 								rbuf[byte_pos] <= `HW_TYPE;
 								pstate          = pstate_idle;
 								ack             = 1;
-								p_result       <= 1;
+								presult        <= presult_success;
 							end
 						endcase
 						byte_pos++;
@@ -382,9 +390,9 @@ module top(
 						end
 					2005*us:
 						begin
-							pstate    = pstate_idle;
-							ack       = 1;
-							p_result <= 1;
+							pstate   = pstate_idle;
+							ack      = 1;
+							presult <= presult_success;
 							reset_prom_pins;
 						end
 					endcase
@@ -399,7 +407,7 @@ module top(
 						end else begin
 							pstate     = pstate_idle;
 							ack        = 1;
-							p_result  <= 0;
+							presult   <= presult_fail;
 						end
 					4*us:
 						pwr_read;
@@ -407,9 +415,9 @@ module top(
 						reset_prom(1);
 					6000*us:
 						begin
-							pstate    = pstate_idle;
-							ack       = 1;
-							p_result <= 1;
+							pstate   = pstate_idle;
+							ack      = 1;
+							presult <= presult_success;
 							reset_prom(0);
 						end
 					endcase
@@ -424,7 +432,7 @@ module top(
 						end else begin
 							pstate     = pstate_idle;
 							ack        = 1;
-							p_result  <= 0;
+							presult   <= presult_fail;
 						end
 					4*us:
 						pwr_verify;
@@ -432,9 +440,9 @@ module top(
 						reset_prom(1);
 					6000*us:
 						begin
-							pstate    = pstate_idle;
-							ack       = 1;
-							p_result <= 1;
+							pstate   = pstate_idle;
+							ack      = 1;
+							presult <= presult_success;
 							reset_prom(0);
 						end
 					endcase
@@ -450,7 +458,7 @@ module top(
 						end else begin
 							pstate     = pstate_idle;
 							ack        = 1;
-							p_result  <= 0;
+							presult   <= presult_fail;
 						end
 					4*us:
 						pwr_prog;
@@ -487,9 +495,56 @@ module top(
 						clk <= 1;
 					6000*us:
 						begin
-							pstate    = pstate_idle;
-							ack       = 1;
-							p_result <= 1;
+							pstate   = pstate_idle;
+							ack      = 1;
+							presult <= presult_success;
+						end
+					endcase
+				pcmd_read:
+					case (pstep)
+					0*us:
+						if (pmode == pmode_read || pmode == pmode_verify) begin
+							word_count  = parg[9:0];
+							byte_pos    = parg[13:10] << 8;
+							bit_pos     = 0;
+							presult    <= presult_success;
+						end else begin
+							pstate      = pstate_idle;
+							ack         = 1;
+							presult    <= presult_fail;
+						end
+					1*us:
+						begin
+							verify_word    <<= 1;
+							verify_word[0]   = data_s;
+							clk             <= 1;
+						end
+					2*us:
+						begin
+							clk <= 0;
+							if (&bit_pos[2:0]) begin
+								rbuf[byte_pos] <= { verify_word[0], verify_word[1],
+								                    verify_word[2], verify_word[3],
+								                    verify_word[4], verify_word[5],
+								                    verify_word[6], verify_word[7] };
+								byte_pos++;
+							end
+							if ((dev64bit && bit_pos == 63) || (!dev64bit && bit_pos == 31))
+								word_count--;
+							bit_pos++;
+							if (word_count) begin
+								pstep = 0*us;
+								if (!n_ceo_s)
+									presult <= presult_early_ceo;
+							end else begin
+								if (!n_ceo_s && presult != presult_early_ceo)
+									presult <= presult_success_ceo;
+							end
+						end
+					2*us+1:
+						begin
+							pstate = pstate_idle;
+							ack    = 1;
 						end
 					endcase
 				pcmd_prog_inc:
@@ -509,7 +564,7 @@ module top(
 						end else begin
 							pstate      = pstate_idle;
 							ack         = 1;
-							p_result   <= 0;
+							presult    <= presult_fail;
 						end
 					0*us+1:
 						if (sense_reset)
@@ -531,7 +586,7 @@ module top(
 					end else begin
 						pstate      = pstate_idle;
 						ack         = 1;
-						p_result   <= 0;
+						presult    <= presult_fail;
 					end
 				endcase
 				pstep++;
@@ -561,11 +616,11 @@ module top(
 				end
 			10*us:
 				if (next_pstate == pstate_idle) begin
-					pstate    = pstate_idle;
-					ack       = 1;
-					p_result <= 1;
+					pstate   = pstate_idle;
+					ack      = 1;
+					presult <= presult_success;
 				end else
-					pstate    = next_pstate;
+					pstate   = next_pstate;
 			default:
 				pstep++;
 			endcase
@@ -615,18 +670,18 @@ module top(
 					n_ce <= 1;
 					dir  <= 0;
 					if (next_pstate == pstate_idle) begin
-						pstate    = pstate_idle;
-						ack       = 1;
-						p_result <= 1;
+						pstate   = pstate_idle;
+						ack      = 1;
+						presult <= presult_success;
 					end else begin
 						if ((dev64bit && verify_word != prog_word) ||
 						    (!dev64bit && verify_word[31:0] != prog_word[31:0])) begin
-							pstate    = pstate_idle;
-							ack       = 1;
-							p_result <= 0;
-							p_match  <= 0;
+							pstate   = pstate_idle;
+							ack      = 1;
+							presult <= presult_fail;
+							p_match <= 0;
 						end else
-							pstate    = next_pstate;
+							pstate   = next_pstate;
 					end
 				end
 			default:
@@ -638,7 +693,7 @@ module top(
 			pstate      = pstate_idle;
 			pmode       = pmode_off;
 			ack         = 1;
-			p_result   <= 0;
+			presult    <= presult_fail;
 			p_match    <= 0;
 			dev5v      <= 0;
 			dev5v_prog <= 0;
@@ -728,7 +783,7 @@ module top(
 	localparam cstate_t cstate_tx_data       = 7;
 
 	cstate_t           cstate;
-	byte               ccmd, result;
+	byte               ccmd, cresult;
 	(* mem2reg *) byte arg[4];
 	argidx_t           argi;
 	size_t             bufi;
@@ -736,11 +791,13 @@ module top(
 	initial cstate = cstate_idle;
 
 	localparam byte sof               = 'h1b;
-	localparam byte result_ack        = 'h06;
-	localparam byte result_nack       = 'h15;
-	localparam byte result_data       = 'h1a;
-	localparam byte result_async      = 'h16;
-	localparam byte result_busy       = 'h07;
+	localparam byte cresult_ack       = 'h06;
+	localparam byte cresult_nack      = 'h15;
+	localparam byte cresult_data      = 'h1a;
+	localparam byte cresult_async     = 'h16;
+	localparam byte cresult_busy      = 'h07;
+	localparam byte cresult_ceo       = 'h04;
+	localparam byte cresult_early_ceo = 'h14;
 	localparam byte ccmd_read_buffer  = 'h01;
 	localparam byte ccmd_write_buffer = 'h81;
 	localparam byte ccmd_poll         = 'h02;
@@ -752,8 +809,9 @@ module top(
 	localparam byte ccmd_pwron_read   = 'h08;
 	localparam byte ccmd_pwron_verify = 'h09;
 	localparam byte ccmd_pwron_prog   = 'h0a;
-	localparam byte ccmd_prog_inc     = 'h0b;
-	localparam byte ccmd_prog_verify  = 'h0c;
+	localparam byte ccmd_read         = 'h0b;
+	localparam byte ccmd_prog_inc     = 'h0c;
+	localparam byte ccmd_prog_verify  = 'h0d;
 
 	always_ff @(posedge clk12m) begin
 		logic  ack;
@@ -807,168 +865,186 @@ module top(
 				end
 			ccmd_write_buffer:
 				begin
-					cstate = cstate_tx_result;
-					result = result_ack;
-					ack    = 1;
+					cstate  = cstate_tx_result;
+					cresult = cresult_ack;
+					ack     = 1;
 				end
 			ccmd_poll:
 				if (p_seq == p_ack) begin
-					cstate  = cstate_tx_result;
-					result  = p_result ? result_ack : result_nack;
-					ack     = 1;
+					cstate   = cstate_tx_result;
+					ack      = 1;
+					case (presult)
+						presult_fail:        cresult = cresult_nack;
+						presult_early_ceo:   cresult = cresult_early_ceo;
+						presult_success:     cresult = cresult_ack;
+						presult_success_ceo: cresult = cresult_ceo;
+					endcase
 				end else begin
-					cstate  = cstate_tx_result;
-					result  = result_busy;
-					ack     = 1;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_busy;
+					ack      = 1;
 				end
 			ccmd_test_echo:
 				if (p_seq == p_ack) begin
-					cstate  = cstate_tx_result;
-					result  = result_async;
-					ack     = 1;
-					pcmd   <= pcmd_test_echo;
-					parg   <= { arg[3], arg[2], arg[1], arg[0] };
-					p_seq  <= !p_seq;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_async;
+					ack      = 1;
+					pcmd    <= pcmd_test_echo;
+					parg    <= { arg[3], arg[2], arg[1], arg[0] };
+					p_seq   <= !p_seq;
 				end else begin
-					cstate  = cstate_tx_result;
-					result  = result_busy;
-					ack     = 1;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_busy;
+					ack      = 1;
 				end
 			ccmd_test_voltage:
 				if (p_seq == p_ack) begin
-					cstate  = cstate_tx_result;
-					result  = result_async;
-					ack     = 1;
-					pcmd   <= pcmd_test_voltage;
-					parg   <= { arg[3], arg[2], arg[1], arg[0] };
-					p_seq  <= !p_seq;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_async;
+					ack      = 1;
+					pcmd    <= pcmd_test_voltage;
+					parg    <= { arg[3], arg[2], arg[1], arg[0] };
+					p_seq   <= !p_seq;
 				end else begin
-					cstate  = cstate_tx_result;
-					result  = result_busy;
-					ack     = 1;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_busy;
+					ack      = 1;
 				end
 			ccmd_config_prom:
 				if (p_seq == p_ack) begin
-					cstate  = cstate_tx_result;
-					result  = result_async;
-					ack     = 1;
-					pcmd   <= pcmd_config_prom;
-					parg   <= { arg[3], arg[2], arg[1], arg[0] };
-					p_seq  <= !p_seq;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_async;
+					ack      = 1;
+					pcmd    <= pcmd_config_prom;
+					parg    <= { arg[3], arg[2], arg[1], arg[0] };
+					p_seq   <= !p_seq;
 				end else begin
-					cstate  = cstate_tx_result;
-					result  = result_busy;
-					ack     = 1;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_busy;
+					ack      = 1;
 				end
 			ccmd_query_info:
 				if (p_seq == p_ack) begin
-					cstate  = cstate_tx_result;
-					result  = result_async;
-					ack     = 1;
-					pcmd   <= pcmd_query_info;
-					parg   <= { arg[3], arg[2], arg[1], arg[0] };
-					p_seq  <= !p_seq;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_async;
+					ack      = 1;
+					pcmd    <= pcmd_query_info;
+					parg    <= { arg[3], arg[2], arg[1], arg[0] };
+					p_seq   <= !p_seq;
 				end else begin
-					cstate  = cstate_tx_result;
-					result  = result_busy;
-					ack     = 1;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_busy;
+					ack      = 1;
 				end
 			ccmd_pwroff:
 				if (p_seq == p_ack) begin
-					cstate  = cstate_tx_result;
-					result  = result_async;
-					ack     = 1;
-					pcmd   <= pcmd_pwroff;
-					parg   <= { arg[3], arg[2], arg[1], arg[0] };
-					p_seq  <= !p_seq;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_async;
+					ack      = 1;
+					pcmd    <= pcmd_pwroff;
+					parg    <= { arg[3], arg[2], arg[1], arg[0] };
+					p_seq   <= !p_seq;
 				end else begin
-					cstate  = cstate_tx_result;
-					result  = result_busy;
-					ack     = 1;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_busy;
+					ack      = 1;
 				end
 			ccmd_pwron_read:
 				if (p_seq == p_ack) begin
-					cstate  = cstate_tx_result;
-					result  = result_async;
-					ack     = 1;
-					pcmd   <= pcmd_pwron_read;
-					parg   <= { arg[3], arg[2], arg[1], arg[0] };
-					p_seq  <= !p_seq;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_async;
+					ack      = 1;
+					pcmd    <= pcmd_pwron_read;
+					parg    <= { arg[3], arg[2], arg[1], arg[0] };
+					p_seq   <= !p_seq;
 				end else begin
-					cstate  = cstate_tx_result;
-					result  = result_busy;
-					ack     = 1;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_busy;
+					ack      = 1;
 				end
 			ccmd_pwron_verify:
 				if (p_seq == p_ack) begin
-					cstate  = cstate_tx_result;
-					result  = result_async;
-					ack     = 1;
-					pcmd   <= pcmd_pwron_verify;
-					parg   <= { arg[3], arg[2], arg[1], arg[0] };
-					p_seq  <= !p_seq;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_async;
+					ack      = 1;
+					pcmd    <= pcmd_pwron_verify;
+					parg    <= { arg[3], arg[2], arg[1], arg[0] };
+					p_seq   <= !p_seq;
 				end else begin
-					cstate  = cstate_tx_result;
-					result  = result_busy;
-					ack     = 1;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_busy;
+					ack      = 1;
 				end
 			ccmd_pwron_prog:
 				if (p_seq == p_ack) begin
-					cstate  = cstate_tx_result;
-					result  = result_async;
-					ack     = 1;
-					pcmd   <= pcmd_pwron_prog;
-					parg   <= { arg[3], arg[2], arg[1], arg[0] };
-					p_seq  <= !p_seq;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_async;
+					ack      = 1;
+					pcmd    <= pcmd_pwron_prog;
+					parg    <= { arg[3], arg[2], arg[1], arg[0] };
+					p_seq   <= !p_seq;
 				end else begin
-					cstate  = cstate_tx_result;
-					result  = result_busy;
-					ack     = 1;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_busy;
+					ack      = 1;
+				end
+			ccmd_read:
+				if (p_seq == p_ack) begin
+					cstate   = cstate_tx_result;
+					cresult  = cresult_async;
+					ack      = 1;
+					pcmd    <= pcmd_read;
+					parg    <= { arg[3], arg[2], arg[1], arg[0] };
+					p_seq   <= !p_seq;
+				end else begin
+					cstate   = cstate_tx_result;
+					cresult  = cresult_busy;
+					ack      = 1;
 				end
 			ccmd_prog_inc:
 				if (p_seq == p_ack) begin
-					cstate  = cstate_tx_result;
-					result  = result_async;
-					ack     = 1;
-					pcmd   <= pcmd_prog_inc;
-					parg   <= { arg[3], arg[2], arg[1], arg[0] };
-					p_seq  <= !p_seq;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_async;
+					ack      = 1;
+					pcmd    <= pcmd_prog_inc;
+					parg    <= { arg[3], arg[2], arg[1], arg[0] };
+					p_seq   <= !p_seq;
 				end else begin
-					cstate  = cstate_tx_result;
-					result  = result_busy;
-					ack     = 1;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_busy;
+					ack      = 1;
 				end
 			ccmd_prog_verify:
 				if (p_seq == p_ack) begin
-					cstate  = cstate_tx_result;
-					result  = result_async;
-					ack     = 1;
-					pcmd   <= pcmd_prog_verify;
-					parg   <= { arg[3], arg[2], arg[1], arg[0] };
-					p_seq  <= !p_seq;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_async;
+					ack      = 1;
+					pcmd    <= pcmd_prog_verify;
+					parg    <= { arg[3], arg[2], arg[1], arg[0] };
+					p_seq   <= !p_seq;
 				end else begin
-					cstate  = cstate_tx_result;
-					result  = result_busy;
-					ack     = 1;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_busy;
+					ack      = 1;
 				end
 			default:
 				begin
-					cstate = cstate_tx_result;
-					result = result_nack;
-					ack    = 1;
+					cstate   = cstate_tx_result;
+					cresult  = cresult_nack;
+					ack      = 1;
 				end
 			endcase
 		cstate_tx_result:
 			if (tx_seq == tx_ack) begin
 				cstate   = cstate_idle;
-				tx_data <= result;
+				tx_data <= cresult;
 				tx_seq  <= !tx_seq;
 			end
 		cstate_tx_data_start:
 			if (tx_seq == tx_ack) begin
 				cstate   = cstate_tx_data;
 				bufi     = rw_start;
-				tx_data <= result_data;
+				tx_data <= cresult_data;
 				tx_seq  <= !tx_seq;
 			end
 		cstate_tx_data:
