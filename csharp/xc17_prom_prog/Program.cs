@@ -15,6 +15,7 @@ namespace xc17_prom_prog
 			bool   detect       = false;
 			bool   readReset    = false;
 			bool   read         = false;
+			bool   blankCheck   = false;
 			string port         = null;
 			string voltageStr   = null;
 			string promType     = null;
@@ -35,6 +36,7 @@ namespace xc17_prom_prog
 						case "--detect":       detect       = true;                                num++; break;
 						case "--read-reset":   readReset    = true;                                num++; break;
 						case "--read":         read         = true;  outFile      = nextArg;  i++; num++; break;
+						case "--blank":        blankCheck   = true;                                num++; break;
 						case "--":             parseOptions = false;                                      break;
 						default:
 							if (args[i] != "--help")
@@ -79,6 +81,7 @@ namespace xc17_prom_prog
 				Console.Error.WriteLine("  --detect");
 				Console.Error.WriteLine("  --read-reset");
 				Console.Error.WriteLine("  --read");
+				Console.Error.WriteLine("  --blank");
 				return 2;
 			}
 
@@ -159,6 +162,19 @@ namespace xc17_prom_prog
 						w = new BinaryWriter(File.Open(outFile, FileMode.Create, FileAccess.Write, FileShare.Read));
 					prog.Read(w, invReset);
 				}
+				if (blankCheck)
+				{
+					if (prog.IsBlank(invReset))
+					{
+						Console.Error.WriteLine("Device is blank.");
+						return 0;
+					}
+					else
+					{
+						Console.Error.WriteLine("Device is not blank.");
+						return 1;
+					}
+				}
 			}
 			catch (InvalidResponseException e)
 			{
@@ -191,6 +207,7 @@ namespace xc17_prom_prog
 			o.WriteLine("  --detect                Just detect the presence of the PROM chip by verifying device ID.");
 			o.WriteLine("  --read-reset            Read reset polarity; returns 0 if inverted (active low), otherwise 1.");
 			o.WriteLine("  --read OUTFILE          Read chip contents into OUTFILE.");
+			o.WriteLine("  --blank                 Perform blank check; returns 0 if blank, otherwise 1.");
 			o.WriteLine("Supported values for PROM:");
 			o.Write(" ");
 			bool first = true;

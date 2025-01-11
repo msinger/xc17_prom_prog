@@ -39,6 +39,16 @@ namespace xc17_prom_prog
 
 		public void Read(BinaryWriter w, bool invReset)
 		{
+			ReadOrBlankCheck(w, invReset);
+		}
+
+		public bool IsBlank(bool invReset)
+		{
+			return ReadOrBlankCheck(BinaryWriter.Null, invReset);
+		}
+
+		private bool ReadOrBlankCheck(BinaryWriter w, bool invReset)
+		{
 			if (prom.Density == 0)
 				throw new InvalidOperationException("Need to configure PROM first.");
 			int   length     = (prom.Density + 7) / 8;
@@ -49,6 +59,7 @@ namespace xc17_prom_prog
 			bool  first      = true;
 			bool  earlyCeo   = false;
 			bool  ceo        = false;
+			bool  blank      = true;
 			PowerOnRead(invReset);
 			while (true)
 			{
@@ -77,6 +88,9 @@ namespace xc17_prom_prog
 				{
 					byte[] buf = ReadBuffer(offset[odd ? 0 : 1], prevLength);
 					w.Write(buf);
+					for (int i = 0; i < prevLength; i++)
+						if (buf[i] != 0xff)
+							blank = false;
 				}
 				if (length <= 0)
 					break;
@@ -91,6 +105,7 @@ namespace xc17_prom_prog
 				throw new InvalidResponseException("Early CEO");
 			if (!ceo)
 				throw new InvalidResponseException("No CEO");
+			return blank;
 		}
 
 		public void VerifyDeviceID()
