@@ -37,17 +37,61 @@ namespace xc17_prom_prog
 
 		private PromInfo prom;
 
-		public void Read(BinaryWriter w, bool invReset)
-		{
-			ReadOrBlankCheck(w, invReset);
-		}
-
 		public bool IsBlank(bool invReset)
 		{
-			return ReadOrBlankCheck(BinaryWriter.Null, invReset);
+			return ReadOrBlankCheck(BinaryWriter.Null, invReset, false);
 		}
 
-		private bool ReadOrBlankCheck(BinaryWriter w, bool invReset)
+		public void Read(BinaryWriter w, bool invReset, bool marginVoltage)
+		{
+			ReadOrBlankCheck(w, invReset, marginVoltage);
+		}
+
+		public bool Verify(BinaryReader r, bool invReset, bool marginVoltage)
+		{
+			MemoryStream m = new MemoryStream();
+			BinaryWriter w = new BinaryWriter(m);
+			ReadOrBlankCheck(w, invReset, marginVoltage);
+			m.Seek(0, SeekOrigin.Begin);
+			bool eof_a = false, eof_b = false;
+			while (!eof_a || !eof_b)
+			{
+				int a = -1, b = -1;
+				if (!eof_a)
+					a = m.ReadByte();
+				if (a == -1)
+					eof_a = true;
+				if (!eof_b)
+				{
+					try
+					{
+						b = r.ReadByte();
+					}
+					catch (EndOfStreamException)
+					{
+						eof_b = true;
+					}
+				}
+				if (eof_a == eof_b)
+				{
+					if (a != b)
+						return false;
+				}
+				else if (eof_a)
+				{
+					if (b != 0xff)
+						return false;
+				}
+				else if (eof_b)
+				{
+					if (a != 0xff)
+						return false;
+				}
+			}
+			return true;
+		}
+
+		private bool ReadOrBlankCheck(BinaryWriter w, bool invReset, bool marginVoltage)
 		{
 			if (prom.Density == 0)
 				throw new InvalidOperationException("Need to configure PROM first.");
@@ -60,7 +104,10 @@ namespace xc17_prom_prog
 			bool  earlyCeo   = false;
 			bool  ceo        = false;
 			bool  blank      = true;
-			PowerOnRead(invReset);
+			if (marginVoltage)
+				PowerOnVerify(invReset);
+			else
+				PowerOnRead(invReset);
 			while (true)
 			{
 				if (!first)

@@ -13,13 +13,17 @@ namespace xc17_prom_prog
 			bool   testEcho     = false;
 			bool   testVoltage  = false;
 			bool   detect       = false;
+			bool   blankCheck   = false;
 			bool   readReset    = false;
 			bool   read         = false;
-			bool   blankCheck   = false;
+			bool   marginRead   = false;
+			bool   verify       = false;
+			bool   marginVerify = false;
 			string port         = null;
 			string voltageStr   = null;
 			string promType     = null;
 			string outFile      = null;
+			string inFile       = null;
 			int    num          = 0;
 
 			for (int i = 0; i < args.Length; i++)
@@ -30,14 +34,17 @@ namespace xc17_prom_prog
 					string nextArgL = nextArg != null ? nextArg.ToLower() : null;
 					switch (args[i])
 					{
-						case "--test-echo":    testEcho     = true;                                num++; break;
-						case "--test-voltage": testVoltage  = true;  voltageStr   = nextArgL; i++; num++; break;
-						case "--prom":                               promType     = nextArgL; i++;        break;
-						case "--detect":       detect       = true;                                num++; break;
-						case "--read-reset":   readReset    = true;                                num++; break;
-						case "--read":         read         = true;  outFile      = nextArg;  i++; num++; break;
-						case "--blank":        blankCheck   = true;                                num++; break;
-						case "--":             parseOptions = false;                                      break;
+						case "--test-echo":     testEcho     = true;                                num++; break;
+						case "--test-voltage":  testVoltage  = true;  voltageStr   = nextArgL; i++; num++; break;
+						case "--prom":                                promType     = nextArgL; i++;        break;
+						case "--detect":        detect       = true;                                num++; break;
+						case "--blank":         blankCheck   = true;                                num++; break;
+						case "--read-reset":    readReset    = true;                                num++; break;
+						case "--read":          read         = true;  outFile      = nextArg;  i++; num++; break;
+						case "--margin-read":   marginRead   = true;  outFile      = nextArg;  i++; num++; break;
+						case "--verify":        verify       = true;  inFile       = nextArg;  i++; num++; break;
+						case "--margin-verify": marginVerify = true;  inFile       = nextArg;  i++; num++; break;
+						case "--":              parseOptions = false;                                      break;
 						default:
 							if (args[i] != "--help")
 								Console.Error.WriteLine("Invalid argument: " + args[i]);
@@ -79,13 +86,16 @@ namespace xc17_prom_prog
 				Console.Error.WriteLine("  --test-echo");
 				Console.Error.WriteLine("  --test-voltage");
 				Console.Error.WriteLine("  --detect");
+				Console.Error.WriteLine("  --blank");
 				Console.Error.WriteLine("  --read-reset");
 				Console.Error.WriteLine("  --read");
-				Console.Error.WriteLine("  --blank");
+				Console.Error.WriteLine("  --margin-read");
+				Console.Error.WriteLine("  --verify");
+				Console.Error.WriteLine("  --margin-verify");
 				return 2;
 			}
 
-			if (detect || readReset || read)
+			if (detect || blankCheck || readReset || read || marginRead || verify || marginVerify)
 			{
 				if (promType == null)
 				{
@@ -151,17 +161,6 @@ namespace xc17_prom_prog
 					Console.Error.WriteLine("Reset inverted bit is programmed (inverted; active low).");
 				else
 					Console.Error.WriteLine("Reset inverted bit is not programmed (default; active high).");
-				if (readReset)
-					return invReset ? 0 : 1;
-				if (read)
-				{
-					BinaryWriter w;
-					if (outFile == null || outFile == "-")
-						w = new BinaryWriter(Console.OpenStandardOutput());
-					else
-						w = new BinaryWriter(File.Open(outFile, FileMode.Create, FileAccess.Write, FileShare.Read));
-					prog.Read(w, invReset);
-				}
 				if (blankCheck)
 				{
 					if (prog.IsBlank(invReset))
@@ -172,6 +171,35 @@ namespace xc17_prom_prog
 					else
 					{
 						Console.Error.WriteLine("Device is not blank.");
+						return 1;
+					}
+				}
+				if (readReset)
+					return invReset ? 0 : 1;
+				if (read || marginRead)
+				{
+					BinaryWriter w;
+					if (outFile == null || outFile == "-")
+						w = new BinaryWriter(Console.OpenStandardOutput());
+					else
+						w = new BinaryWriter(File.Open(outFile, FileMode.Create, FileAccess.Write, FileShare.Read));
+					prog.Read(w, invReset, marginRead);
+				}
+				if (verify || marginVerify)
+				{
+					BinaryReader r;
+					if (inFile == null || inFile == "-")
+						r = new BinaryReader(Console.OpenStandardInput());
+					else
+						r = new BinaryReader(File.Open(inFile, FileMode.Open, FileAccess.Read, FileShare.Read));
+					if (prog.Verify(r, invReset, marginVerify))
+					{
+						Console.Error.WriteLine("Verify successful.");
+						return 0;
+					}
+					else
+					{
+						Console.Error.WriteLine("Verify failed.");
 						return 1;
 					}
 				}
@@ -205,9 +233,12 @@ namespace xc17_prom_prog
 			o.WriteLine("                          be one of vcc-gnd, vcc-3v3, vcc-5v, vpp-gnd, vpp-gnd-weak, vpp-3v3,");
 			o.WriteLine("                          vpp-3v7, vpp-5v, vpp-5v4, vpp-12v25, vpp-12v25-weak, off.");
 			o.WriteLine("  --detect                Just detect the presence of the PROM chip by verifying device ID.");
+			o.WriteLine("  --blank                 Perform blank check; returns 0 if blank, otherwise 1.");
 			o.WriteLine("  --read-reset            Read reset polarity; returns 0 if inverted (active low), otherwise 1.");
 			o.WriteLine("  --read OUTFILE          Read chip contents into OUTFILE.");
-			o.WriteLine("  --blank                 Perform blank check; returns 0 if blank, otherwise 1.");
+			o.WriteLine("  --margin-read OUTFILE   Read chip contents into OUTFILE with margin voltage applied.");
+			o.WriteLine("  --verify INFILE         Verify chip contents match INFILE.");
+			o.WriteLine("  --margin-verify INFILE  Verify chip contents match INFILE with margin voltage applied.");
 			o.WriteLine("Supported values for PROM:");
 			o.Write(" ");
 			bool first = true;
