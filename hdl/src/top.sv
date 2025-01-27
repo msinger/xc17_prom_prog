@@ -60,7 +60,7 @@ module top(
 	logic data_ena, data_out, data_in, data_s;
 	cdc #(1) data_cdc (clk12m, data_in, data_s);
 	SB_IO #(
-		.PIN_TYPE('b 00_1010),
+		.PIN_TYPE('b 1010_00),
 		.PULLUP(1)
 	) data_io (
 		.PACKAGE_PIN(data),
@@ -73,7 +73,7 @@ module top(
 	logic n_ceo_in, n_ceo_s;
 	cdc #(1) n_ceo_cdc (clk12m, n_ceo_in, n_ceo_s);
 	SB_IO #(
-		.PIN_TYPE('b 00_0000),
+		.PIN_TYPE('b 0000_00),
 		.PULLUP(1)
 	) n_ceo_io (
 		.PACKAGE_PIN(n_ceo),
@@ -102,7 +102,7 @@ module top(
 	initial vpp_12v25      = 0;
 	initial vpp_12v25_weak = 0;
 
-	typedef logic [1:0]  pstate_t;
+	typedef logic [3:0]  pstate_t;
 	typedef logic [1:0]  pmode_t;
 	typedef logic [3:0]  pcmd_t;
 	typedef logic [31:0] parg_t;
@@ -113,6 +113,11 @@ module top(
 	localparam pstate_t pstate_proc        = 1;
 	localparam pstate_t pstate_prog_inc    = 2;
 	localparam pstate_t pstate_prog_verify = 3;
+	localparam pstate_t pstate_prog_write  = 4;
+	localparam pstate_t pstate_prog_raise  = 5;
+	localparam pstate_t pstate_prog_wait   = 6;
+	localparam pstate_t pstate_prog_fall   = 7;
+	localparam pstate_t pstate_prog_next   = 8;
 
 	localparam pmode_t pmode_off       = 0;
 	localparam pmode_t pmode_read      = 1;
@@ -130,17 +135,18 @@ module top(
 	localparam pcmd_t pcmd_read         = 8;
 	localparam pcmd_t pcmd_prog_inc     = 9;
 	localparam pcmd_t pcmd_prog_verify  = 10;
+	localparam pcmd_t pcmd_prog_start   = 11;
 
 	localparam presult_t presult_fail        = 0;
 	localparam presult_t presult_early_ceo   = 1;
 	localparam presult_t presult_success     = 2;
 	localparam presult_t presult_success_ceo = 3;
 
-	pstate_t  pstate, next_pstate;
+	pstate_t  pstate;
 	pmode_t   pmode;
 	pcmd_t    pcmd;
 	parg_t    parg;
-	logic     p_seq, p_ack, p_match;
+	logic     p_seq, p_ack;
 	pstep_t   pstep;
 	presult_t presult;
 
@@ -288,8 +294,39 @@ module top(
 	logic [11:0] byte_pos;
 	logic [9:0]  word_count;
 	logic [16:0] inc_count;
+	logic        handle_reset;
+	logic        cont_on_err;
+	logic        inner_verify;
+	logic [1:0]  retry_count;
+
+	/*
+	 * Data in prog_word and verify_word are bit swapped.
+	 * For 32 bit devices, only [31:0] are used.
+	 */
 	logic [63:0] prog_word, verify_word;
-	logic        sense_reset;
+	initial prog_word   = 0;
+	initial verify_word = 0;
+
+	/*
+	 * Like prog_word, prog_word_tmp is bit swapped.
+	 * For 32 bit devices, only [63:32] are used.
+	 */
+	logic [63:0] prog_word_tmp;
+
+	task automatic load_prog_byte();
+		prog_word <= prog_word << 8;
+		{ prog_word[0], prog_word[1], prog_word[2], prog_word[3],
+		  prog_word[4], prog_word[5], prog_word[6], prog_word[7] } <= wbuf[byte_pos];
+		byte_pos++;
+	endtask
+
+	task automatic store_verify_byte();
+		rbuf[byte_pos] <= { verify_word[0], verify_word[1],
+		                    verify_word[2], verify_word[3],
+		                    verify_word[4], verify_word[5],
+		                    verify_word[6], verify_word[7] };
+		byte_pos++;
+	endtask
 
 	always_ff @(posedge clk12m) begin
 		logic ack;
@@ -522,13 +559,8 @@ module top(
 					2*us:
 						begin
 							clk <= 0;
-							if (&bit_pos[2:0]) begin
-								rbuf[byte_pos] <= { verify_word[0], verify_word[1],
-								                    verify_word[2], verify_word[3],
-								                    verify_word[4], verify_word[5],
-								                    verify_word[6], verify_word[7] };
-								byte_pos++;
-							end
+							if (&bit_pos[2:0])
+								store_verify_byte;
 							if ((dev64bit && bit_pos == 63) || (!dev64bit && bit_pos == 31))
 								word_count--;
 							bit_pos++;
@@ -551,42 +583,57 @@ module top(
 					case (pstep)
 					0*us:
 						if (pmode == pmode_prog) begin
-							reset_oe   <= 0;
-							inc_count   = parg[16:0];
-							sense_reset = parg[24];
+							reset_oe    <= 0;
+							inc_count    = parg[16:0];
+							handle_reset = parg[24];
 							/* When reset is being read, DATA needs to be driven high
 							 * before incrementing address counter. (data_ena is set
 							 * one tick later.) */
-							if (sense_reset) begin
+							if (handle_reset) begin
 								dir      <= 1;
 								data_out <= 1;
 							end
 						end else begin
-							pstate      = pstate_idle;
-							ack         = 1;
-							presult    <= presult_fail;
+							pstate   = pstate_idle;
+							ack      = 1;
+							presult <= presult_fail;
 						end
 					0*us+1:
-						if (sense_reset)
+						if (handle_reset)
 							data_ena <= 1;
 					4*us-1:
 						begin
-							pstate      = pstate_prog_inc;
-							next_pstate = pstate_idle;
-							pstep       = '1; /* gets incremented to 0 down below */
+							pstate = pstate_prog_inc;
+							pstep  = '1; /* gets incremented to 0 down below */
 						end
 					endcase
 				pcmd_prog_verify:
 					if (pmode == pmode_prog) begin
-						byte_pos    = parg[13:10] << 8;
-						sense_reset = parg[24];
-						pstate      = pstate_prog_verify;
-						next_pstate = pstate_idle;
-						pstep       = '1; /* gets incremented to 0 down below */
+						byte_pos      = parg[13:10] << 8;
+						handle_reset  = parg[24];
+						pstate        = pstate_prog_verify;
+						inner_verify  = 0;
+						pstep         = '1; /* gets incremented to 0 down below */
+						presult      <= presult_success;
 					end else begin
-						pstate      = pstate_idle;
-						ack         = 1;
-						presult    <= presult_fail;
+						pstate        = pstate_idle;
+						ack           = 1;
+						presult      <= presult_fail;
+					end
+				pcmd_prog_start:
+					if (pmode == pmode_prog) begin
+						word_count    = parg[9:0];
+						byte_pos      = parg[13:10] << 8;
+						handle_reset  = parg[24];
+						cont_on_err   = parg[25];
+						pstate        = pstate_prog_write;
+						inner_verify  = 1;
+						pstep         = '1; /* gets incremented to 0 down below */
+						presult      <= presult_success;
+					end else begin
+						pstate        = pstate_idle;
+						ack           = 1;
+						presult      <= presult_fail;
 					end
 				endcase
 				pstep++;
@@ -615,12 +662,11 @@ module top(
 					pstep++;
 				end
 			10*us:
-				if (next_pstate == pstate_idle) begin
+				begin
 					pstate   = pstate_idle;
 					ack      = 1;
 					presult <= presult_success;
-				end else
-					pstate   = next_pstate;
+				end
 			default:
 				pstep++;
 			endcase
@@ -635,7 +681,7 @@ module top(
 			4*us:
 				begin
 					verify_word <<= 1;
-					if (sense_reset) /* Reset polarity is read from /CEO and its state is inverted. */
+					if (handle_reset) /* Reset polarity is read from /CEO and its state is inverted. */
 						verify_word[0] = !n_ceo_s;
 					else begin
 						verify_word[0] = data_s;
@@ -647,13 +693,8 @@ module top(
 			5*us:
 				begin
 					clk <= 1;
-					if (next_pstate == pstate_idle && &bit_pos[2:0]) begin
-						rbuf[byte_pos] <= { verify_word[0], verify_word[1],
-						                    verify_word[2], verify_word[3],
-						                    verify_word[4], verify_word[5],
-						                    verify_word[6], verify_word[7] };
-						byte_pos++;
-					end
+					if (!inner_verify && &bit_pos[2:0])
+						store_verify_byte;
 					pstep++;
 					if (!(dev64bit && bit_pos == 63) && !(!dev64bit && bit_pos == 31))
 						pstep = 3*us;
@@ -669,20 +710,237 @@ module top(
 				begin
 					n_ce <= 1;
 					dir  <= 0;
-					if (next_pstate == pstate_idle) begin
-						pstate   = pstate_idle;
-						ack      = 1;
-						presult <= presult_success;
+					if (inner_verify) begin
+						if (handle_reset) begin
+							pstate = pstate_idle;
+							ack    = 1;
+							if (verify_word[0])
+								presult <= presult_fail;
+						end else begin
+							pstate = pstate_prog_next;
+							pstep  = 0;
+						end
 					end else begin
-						if ((dev64bit && verify_word != prog_word) ||
-						    (!dev64bit && verify_word[31:0] != prog_word[31:0])) begin
-							pstate   = pstate_idle;
-							ack      = 1;
-							presult <= presult_fail;
-							p_match <= 0;
-						end else
-							pstate   = next_pstate;
+						pstate = pstate_idle;
+						ack    = 1;
 					end
+				end
+			default:
+				pstep++;
+			endcase
+		pstate_prog_write:
+			case (pstep)
+			0*us:
+				begin
+					dir         <= 1;
+					data_out    <= 0;
+					bit_pos      = 0;
+					retry_count  = 0;
+					load_prog_byte;
+					pstep++;
+				end
+			0*us+1:
+				begin
+					data_ena <= 1;
+					load_prog_byte;
+					pstep++;
+				end
+			0*us+2, 0*us+3,
+			0*us+4, 0*us+5, 0*us+6, 0*us+7:
+				begin
+					if (pstate == 0*us+2 || pstate == 0*us+3 || dev64bit)
+						load_prog_byte;
+					pstep++;
+				end
+			1*us-1:
+				begin
+					prog_word_tmp = '1;
+					if (dev64bit) begin
+						prog_word_tmp = prog_word;
+					end else begin
+						prog_word_tmp[63:32]  = prog_word[31:0];
+						prog_word[63:32]     <= '1; /* simplifies comparison with 32 bit verify_word */
+					end
+					pstep++;
+				end
+			1*us:
+				begin
+					if (&prog_word_tmp) begin
+						/* Skip programming pulse and verify if word is all 1. */
+						pstate = pstate_prog_next;
+						pstep  = 1*us;
+					end else begin
+						clk      <= 0;
+						data_out <= prog_word_tmp[63];
+						pstep++;
+					end
+				end
+			2*us:
+				begin
+					clk            <= 1;
+					prog_word_tmp <<= 1;
+					if ((dev64bit && bit_pos == 63) || (!dev64bit && bit_pos == 31)) begin
+						pstate = pstate_prog_raise;
+						pstep  = 0;
+					end else begin
+						pstep++;
+					end
+					bit_pos++;
+				end
+			3*us-1:
+				pstep = 1*us;
+			default:
+				pstep++;
+			endcase
+		pstate_prog_raise:
+			case (pstep)
+			0*us:
+				begin
+					disable_vpp;
+					pstep++;
+				end
+			4*us:
+				begin
+					vpp_12v25_weak <= 1;
+					pstep++;
+				end
+			10*us:
+				begin
+					pstate = pstate_prog_wait;
+					pstep  = 0;
+				end
+			default:
+				pstep++;
+			endcase
+		pstate_prog_wait:
+			case (1)
+				!handle_reset && !retry_count && pstep == tpgm,
+				!handle_reset && retry_count  && pstep == tpgm1,
+				handle_reset  &&                 pstep == tprst:
+					begin
+						pstate = pstate_prog_fall;
+						pstep  = 0;
+					end
+				default:
+					pstep++;
+			endcase
+		pstate_prog_fall:
+			case (pstep)
+			0*us:
+				begin
+					disable_vpp;
+					pstep++;
+				end
+			4*us:
+				begin
+					vpp_gnd_weak <= 1;
+					vpp_gnd      <= 1;
+					pstep++;
+				end
+			6*us:
+				begin
+					vpp_gnd <= 0;
+					pstep++;
+				end
+			9*us:
+				begin
+					/*
+					 * If device supports verify/retry after prog or if we program
+					 * reset polarity, then apply margin voltage (Vpp2), otherwise
+					 * nominal voltage.
+					 */
+					if (tpgm1 || handle_reset)
+						pwr_vpp2;
+					else
+						pwr_vpp_nominal;
+					pstep++;
+				end
+			11*us:
+				begin
+					if (dev5v_prog)
+						vpp_gnd_weak <= 0;
+					pstep++;
+				end
+			15*us:
+				begin
+					if (!dev5v_prog)
+						vpp_gnd_weak <= 0;
+					data_out <= 0;
+					pstep++;
+				end
+			15*us+1:
+				begin
+					data_ena <= 0;
+					pstep++;
+				end
+			15*us+2:
+				begin
+					dir <= 0;
+					pstep++;
+				end
+			30*us:
+				if (tpgm1 || handle_reset) begin
+					pstate = pstate_prog_verify;
+					pstep  = 0;
+				end else begin
+					pstate = pstate_prog_next;
+					pstep  = 1*us;
+				end
+			default:
+				pstep++;
+			endcase
+		pstate_prog_next:
+			case (pstep)
+			0*us:
+				begin
+					/* Have some bits failed to get programmed to 0? */
+					if (verify_word & ~prog_word) begin
+						if (retry_count >= 2) begin
+							presult <= presult_fail;
+							if (cont_on_err) begin
+								pstep++;
+							end else begin
+								pstate = pstate_idle;
+								ack    = 1;
+							end
+						end else begin
+							/* Retry programming */
+							pstate = pstate_prog_raise;
+							pstep  = 0;
+							retry_count++;
+						end
+					end else begin
+						pstep++;
+					end
+				end
+			1*us:
+				begin
+					reset_oe <= 0;
+					word_count--;
+					pstep++;
+				end
+			2*us:
+				begin
+					clk <= 0;
+					pstep++;
+				end
+			3*us:
+				begin
+					clk <= 1;
+					pstep++;
+				end
+			4*us:
+				begin
+					reset_oe <= 1;
+					pstep++;
+				end
+			5*us:
+				if (word_count) begin
+					pstate = pstate_prog_write;
+					pstep  = 0;
+				end else begin
+					pstate = pstate_idle;
+					ack    = 1;
 				end
 			default:
 				pstep++;
@@ -694,7 +952,6 @@ module top(
 			pmode       = pmode_off;
 			ack         = 1;
 			presult    <= presult_fail;
-			p_match    <= 0;
 			dev5v      <= 0;
 			dev5v_prog <= 0;
 			dev64bit   <= 0;
@@ -812,6 +1069,7 @@ module top(
 	localparam byte ccmd_read         = 'h0b;
 	localparam byte ccmd_prog_inc     = 'h0c;
 	localparam byte ccmd_prog_verify  = 'h0d;
+	localparam byte ccmd_prog_start   = 'h0e;
 
 	always_ff @(posedge clk12m) begin
 		logic  ack;
@@ -1020,6 +1278,19 @@ module top(
 					cresult  = cresult_async;
 					ack      = 1;
 					pcmd    <= pcmd_prog_verify;
+					parg    <= { arg[3], arg[2], arg[1], arg[0] };
+					p_seq   <= !p_seq;
+				end else begin
+					cstate   = cstate_tx_result;
+					cresult  = cresult_busy;
+					ack      = 1;
+				end
+			ccmd_prog_start:
+				if (p_seq == p_ack) begin
+					cstate   = cstate_tx_result;
+					cresult  = cresult_async;
+					ack      = 1;
+					pcmd    <= pcmd_prog_start;
 					parg    <= { arg[3], arg[2], arg[1], arg[0] };
 					p_seq   <= !p_seq;
 				end else begin

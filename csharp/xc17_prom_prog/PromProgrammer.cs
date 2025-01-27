@@ -10,7 +10,7 @@ namespace xc17_prom_prog
 		public const int OffsetStep   = 256;
 		public const int TicksPerUsec = 12;
 
-		public const int Timeout = 250;
+		public const int Timeout = 1000;
 
 		private const byte SOF            = 0x1b;
 		private const byte ResultAck      = 0x06;
@@ -34,8 +34,63 @@ namespace xc17_prom_prog
 		private const byte CmdRead        = 0x0b;
 		private const byte CmdProgInc     = 0x0c;
 		private const byte CmdProgVerify  = 0x0d;
+		private const byte CmdProgStart   = 0x0e;
 
 		private PromInfo prom;
+
+		public void Program(BinaryReader r, bool contOnError = false)
+		{
+			if (prom.Density == 0)
+				throw new InvalidOperationException("Need to configure PROM first.");
+			int   length     = (prom.Density + 7) / 8;
+			bool  odd        = false;
+			int   blockSize  = BufferSize / 2;
+			int[] offset     = new int[] { 0, blockSize / OffsetStep };
+			bool  first      = true;
+			bool  failed     = false;
+			PowerOnProg();
+			while (true)
+			{
+				int curLength = (length > blockSize) ? blockSize : length;
+				if (length > 0)
+				{
+					byte[] buf = r.ReadBytes(curLength);
+					if (buf.Length > curLength)
+						throw new IOException("BinaryReader.ReadBytes() returned too big array.");
+					if (buf.Length < curLength) /* EOF? */
+					{
+						byte[] buf2 = new byte[curLength];
+						Array.Fill<byte>(buf2, 0xff);
+						buf.CopyTo(buf2, 0);
+						buf = buf2;
+					}
+					WriteBuffer(offset[odd ? 1 : 0], buf);
+				}
+				if (!first)
+				{
+					switch (Poll())
+					{
+					case ResultAck:
+						break;
+					default:
+						failed = true;
+						if (!contOnError)
+							throw new InvalidResponseException("No acknowledge");
+						break;
+					}
+				}
+				if (length > 0)
+					AsyncProgramFromBuffer(offset[odd ? 1 : 0], curLength, contOnError);
+				if (length <= 0)
+					break;
+				first = false;
+				length -= blockSize;
+				odd = !odd;
+			}
+			PowerOff();
+			if (failed)
+				throw new InvalidResponseException("Failed");
+		}
 
 		public bool IsBlank(bool invReset)
 		{
@@ -245,6 +300,27 @@ namespace xc17_prom_prog
 		private void PowerOnProg()
 		{
 			SendCmdSynced(CmdPwrOnProg, 0, 0, 0, 0, true);
+		}
+
+		private void AsyncProgramFromBuffer(int offset, int length, bool contOnError = false)
+		{
+			if (offset < 0 || offset >= BufferSize / OffsetStep)
+				throw new ArgumentException("", "offset");
+			if (length <= 0 || length > BufferSize)
+				throw new ArgumentException("", "length");
+			int wordCount = length / (prom.Device64Bit ? 8 : 4);
+			if (wordCount * (prom.Device64Bit ? 8 : 4) != length)
+				throw new ArgumentException("", "length");
+			int offsetInByte = offset * OffsetStep;
+			if (length > BufferSize - offsetInByte)
+				throw new ArgumentException();
+			byte arg0, arg1;
+			arg0  = (byte)(wordCount & 0xff);
+			arg1  = (byte)((wordCount >> 8) & 0x03);
+			arg1 |= (byte)((offset & 0x0f) << 2);
+			byte result = SendCmd(CmdProgStart, arg0, arg1, 0, (byte)(contOnError ? 0x02 : 0x00));
+			if (result != ResultAsync)
+				throw new InvalidResponseException();
 		}
 
 		private void AsyncReadToBuffer(int offset, int length)

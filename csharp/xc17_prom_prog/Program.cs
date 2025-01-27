@@ -19,6 +19,8 @@ namespace xc17_prom_prog
 			bool   marginRead   = false;
 			bool   verify       = false;
 			bool   marginVerify = false;
+			bool   program      = false;
+			bool   forceProgram = false;
 			string port         = null;
 			string voltageStr   = null;
 			string promType     = null;
@@ -44,6 +46,8 @@ namespace xc17_prom_prog
 						case "--margin-read":   marginRead   = true;  outFile      = nextArg;  i++; num++; break;
 						case "--verify":        verify       = true;  inFile       = nextArg;  i++; num++; break;
 						case "--margin-verify": marginVerify = true;  inFile       = nextArg;  i++; num++; break;
+						case "--program":       program      = true;  inFile       = nextArg;  i++; num++; break;
+						case "--force-program": forceProgram = true;  inFile       = nextArg;  i++; num++; break;
 						case "--":              parseOptions = false;                                      break;
 						default:
 							if (args[i] != "--help")
@@ -92,10 +96,20 @@ namespace xc17_prom_prog
 				Console.Error.WriteLine("  --margin-read");
 				Console.Error.WriteLine("  --verify");
 				Console.Error.WriteLine("  --margin-verify");
+				Console.Error.WriteLine("  --program");
+				Console.Error.WriteLine("  --force-program");
 				return 2;
 			}
 
-			if (detect || blankCheck || readReset || read || marginRead || verify || marginVerify)
+			if (detect ||
+			    blankCheck ||
+			    readReset ||
+			    read ||
+			    marginRead ||
+			    verify ||
+			    marginVerify ||
+			    program ||
+			    forceProgram)
 			{
 				if (promType == null)
 				{
@@ -155,7 +169,8 @@ namespace xc17_prom_prog
 			{
 				prog.PowerOff();
 				prog.Prom = promInfo;
-				prog.VerifyDeviceID();
+				if (!forceProgram)
+					prog.VerifyDeviceID();
 				bool invReset = prog.IsResetInverted();
 				if (invReset)
 					Console.Error.WriteLine("Reset inverted bit is programmed (inverted; active low).");
@@ -203,6 +218,15 @@ namespace xc17_prom_prog
 						return 1;
 					}
 				}
+				if (program || forceProgram)
+				{
+					BinaryReader r;
+					if (inFile == null || inFile == "-")
+						r = new BinaryReader(Console.OpenStandardInput());
+					else
+						r = new BinaryReader(File.Open(inFile, FileMode.Open, FileAccess.Read, FileShare.Read));
+					prog.Program(r, forceProgram);
+				}
 			}
 			catch (InvalidResponseException e)
 			{
@@ -239,6 +263,9 @@ namespace xc17_prom_prog
 			o.WriteLine("  --margin-read OUTFILE   Read chip contents into OUTFILE with margin voltage applied.");
 			o.WriteLine("  --verify INFILE         Verify chip contents match INFILE.");
 			o.WriteLine("  --margin-verify INFILE  Verify chip contents match INFILE with margin voltage applied.");
+			o.WriteLine("  --program INFILE        Program INFILE to chip.");
+			o.WriteLine("  --force-program INFILE  Program INFILE to chip. Ignore all errors. Use this without a PROM");
+			o.WriteLine("                          chip for testing the process, like checking voltages on oscilloscope.");
 			o.WriteLine("Supported values for PROM:");
 			o.Write(" ");
 			bool first = true;
