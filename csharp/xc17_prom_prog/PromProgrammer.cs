@@ -92,6 +92,17 @@ namespace xc17_prom_prog
 				throw new InvalidResponseException("Failed");
 		}
 
+		public void ProgramResetPolarity()
+		{
+			if (prom.ClockToReset == 0)
+				throw new InvalidOperationException("Need to configure PROM first.");
+			PowerOnProg();
+			WriteBuffer(0, new byte[8] { 0, 0, 0, 0, 0, 0, 0, 0 });
+			ProgIncrement(prom.ClockToReset);
+			SendCmdSynced(CmdProgStart, 1, 0, 0, 1, true);
+			PowerOff();
+		}
+
 		public bool IsBlank(bool invReset)
 		{
 			return ReadOrBlankCheck(BinaryWriter.Null, invReset, false);

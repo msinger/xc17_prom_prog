@@ -21,6 +21,7 @@ namespace xc17_prom_prog
 			bool   marginVerify = false;
 			bool   program      = false;
 			bool   forceProgram = false;
+			bool   programReset = false;
 			string port         = null;
 			string voltageStr   = null;
 			string promType     = null;
@@ -48,6 +49,7 @@ namespace xc17_prom_prog
 						case "--margin-verify": marginVerify = true;  inFile       = nextArg;  i++; num++; break;
 						case "--program":       program      = true;  inFile       = nextArg;  i++; num++; break;
 						case "--force-program": forceProgram = true;  inFile       = nextArg;  i++; num++; break;
+						case "--program-reset": programReset = true;                                num++; break;
 						case "--":              parseOptions = false;                                      break;
 						default:
 							if (args[i] != "--help")
@@ -98,6 +100,7 @@ namespace xc17_prom_prog
 				Console.Error.WriteLine("  --margin-verify");
 				Console.Error.WriteLine("  --program");
 				Console.Error.WriteLine("  --force-program");
+				Console.Error.WriteLine("  --program-reset");
 				return 2;
 			}
 
@@ -109,7 +112,8 @@ namespace xc17_prom_prog
 			    verify ||
 			    marginVerify ||
 			    program ||
-			    forceProgram)
+			    forceProgram ||
+			    programReset)
 			{
 				if (promType == null)
 				{
@@ -227,6 +231,8 @@ namespace xc17_prom_prog
 						r = new BinaryReader(File.Open(inFile, FileMode.Open, FileAccess.Read, FileShare.Read));
 					prog.Program(r, forceProgram);
 				}
+				if (programReset)
+					prog.ProgramResetPolarity();
 			}
 			catch (InvalidResponseException e)
 			{
@@ -266,6 +272,7 @@ namespace xc17_prom_prog
 			o.WriteLine("  --program INFILE        Program INFILE to chip.");
 			o.WriteLine("  --force-program INFILE  Program INFILE to chip. Ignore all errors. Use this without a PROM");
 			o.WriteLine("                          chip for testing the process, like checking voltages on oscilloscope.");
+			o.WriteLine("  --program-reset         Program reset polarity to be active low.");
 			o.WriteLine("Supported values for PROM:");
 			o.Write(" ");
 			bool first = true;
