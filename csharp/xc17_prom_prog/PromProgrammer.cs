@@ -384,7 +384,7 @@ namespace xc17_prom_prog
 
 		public void TestVoltage(int arg)
 		{
-			if (arg < 0 || arg > 11)
+			if (arg < 0 || arg > 10)
 				throw new ArgumentException("", "arg");
 			SendCmdSynced(CmdTestVoltage, (byte)arg, 0, 0, 0, true);
 		}

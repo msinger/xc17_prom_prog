@@ -16,17 +16,16 @@ set_io n_dcd     30
 set_io led       91
 
 # Voltage select
-set_io vcc_gnd         65
-set_io vcc_3v3         57
-set_io vcc_5v          59
-set_io vpp_gnd         99
-set_io vpp_gnd_weak   100
-set_io vpp_3v3         60
-set_io vpp_3v7         54
-set_io vpp_5v          53
-set_io vpp_5v4         52
-set_io vpp_12v25       51
-set_io vpp_12v25_weak  69
+set_io vcc_gnd       65
+set_io vcc_3v3       57
+set_io vcc_5v        59
+set_io vpp_gnd       99
+set_io vpp_gnd_weak 100
+set_io vpp_3v3       60
+set_io vpp_3v7       54
+set_io vpp_5v        53
+set_io vpp_5v4       52
+set_io vpp_12v25     51
 
 # Level shifter DIR and /OE
 set_io dir       73

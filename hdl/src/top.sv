@@ -26,7 +26,6 @@ module top(
 		output logic vpp_5v,
 		output logic vpp_5v4,
 		output logic vpp_12v25,
-		output logic vpp_12v25_weak,
 
 		output logic dir,
 		output logic n_oe,
@@ -51,7 +50,7 @@ module top(
 		else
 			led_delay++;
 		if (vcc_gnd || vcc_3v3 || vcc_5v ||
-		    vpp_gnd || vpp_gnd_weak || vpp_3v3 || vpp_3v7 || vpp_5v || vpp_5v4 || vpp_12v25 || vpp_12v25_weak) begin
+		    vpp_gnd || vpp_gnd_weak || vpp_3v3 || vpp_3v7 || vpp_5v || vpp_5v4 || vpp_12v25) begin
 			led[0]    <= 1;
 			led_delay  = 0;
 		end
@@ -100,7 +99,6 @@ module top(
 	initial vpp_5v         = 0;
 	initial vpp_5v4        = 0;
 	initial vpp_12v25      = 0;
-	initial vpp_12v25_weak = 0;
 
 	typedef logic [3:0]  pstate_t;
 	typedef logic [1:0]  pmode_t;
@@ -216,7 +214,6 @@ module top(
 		vpp_5v         <= 0;
 		vpp_5v4        <= 0;
 		vpp_12v25      <= 0;
-		vpp_12v25_weak <= 0;
 	endtask
 
 	task automatic disable_all();
@@ -369,7 +366,6 @@ module top(
 							8:  vpp_5v         <= 1;
 							9:  vpp_5v4        <= 1;
 							10: vpp_12v25      <= 1;
-							11: vpp_12v25_weak <= 1;
 						endcase
 					end
 				pcmd_config_prom:
@@ -502,7 +498,7 @@ module top(
 					1000*us:
 						disable_vpp;
 					1004*us:
-						vpp_12v25_weak <= 1;
+						vpp_12v25 <= 1;
 					1010*us:
 						clk <= 1;
 					1011*us:
@@ -801,7 +797,7 @@ module top(
 				end
 			4*us:
 				begin
-					vpp_12v25_weak <= 1;
+					vpp_12v25 <= 1;
 					pstep++;
 				end
 			10*us:

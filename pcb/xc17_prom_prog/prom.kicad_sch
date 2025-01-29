@@ -6,8 +6,8 @@
 	(paper "A4")
 	(title_block
 		(title "XC17xxx PROM Programmer")
-		(date "2024-12-08")
-		(rev "2")
+		(date "2025-01-29")
+		(rev "3")
 		(company "CC-BY-SA-4.0 Michael Singer")
 		(comment 1 "https://github.com/msinger/xc17_prom_prog/")
 		(comment 2 "http://iceboy.a-singer.de/")
@@ -4634,12 +4634,6 @@
 		(uuid "a8dd8ba3-9529-4908-9cc5-b6be708a890d")
 	)
 	(junction
-		(at 77.47 31.75)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "b1e89a55-a84e-47f8-8241-3f716d6a2661")
-	)
-	(junction
 		(at 59.69 63.5)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4668,12 +4662,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "d628b1a8-cf42-4a49-bbbb-04525c9fcf2a")
-	)
-	(junction
-		(at 157.48 120.65)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "d6a82584-d492-4c63-aeed-8acf13b5e4a8")
 	)
 	(junction
 		(at 59.69 152.4)
@@ -4958,16 +4946,6 @@
 			(type default)
 		)
 		(uuid "15eae0f3-17f6-4571-8b48-f99a89980ef0")
-	)
-	(wire
-		(pts
-			(xy 172.72 132.08) (xy 172.72 129.54)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1b9e9e8a-e08a-483d-959e-b88df03ea085")
 	)
 	(wire
 		(pts
@@ -5291,16 +5269,6 @@
 	)
 	(wire
 		(pts
-			(xy 172.72 121.92) (xy 172.72 120.65)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3e5eea63-db28-4fdf-ae51-1a81163daf1f")
-	)
-	(wire
-		(pts
 			(xy 82.55 68.58) (xy 85.09 68.58)
 		)
 		(stroke
@@ -5348,16 +5316,6 @@
 			(type default)
 		)
 		(uuid "42ea0516-7d19-4f9b-96e1-20d39357e08f")
-	)
-	(wire
-		(pts
-			(xy 172.72 120.65) (xy 157.48 120.65)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4312ddd6-a0dd-4b5d-9a73-8594d072534c")
 	)
 	(wire
 		(pts
@@ -6081,16 +6039,6 @@
 	)
 	(wire
 		(pts
-			(xy 92.71 31.75) (xy 77.47 31.75)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "937d5eb7-a49c-4158-bafd-477d27e70165")
-	)
-	(wire
-		(pts
 			(xy 165.1 162.56) (xy 165.1 157.48)
 		)
 		(stroke
@@ -6561,16 +6509,6 @@
 	)
 	(wire
 		(pts
-			(xy 92.71 43.18) (xy 92.71 40.64)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d6674cb3-7e3b-4295-971e-01917cdc3874")
-	)
-	(wire
-		(pts
 			(xy 74.93 120.65) (xy 74.93 121.92)
 		)
 		(stroke
@@ -6878,16 +6816,6 @@
 			(type default)
 		)
 		(uuid "fc84ce08-6312-4f57-9cc8-d75a42a3249b")
-	)
-	(wire
-		(pts
-			(xy 92.71 33.02) (xy 92.71 31.75)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "feb2a62f-914b-439b-a17e-d3d9e507b269")
 	)
 	(wire
 		(pts
@@ -7628,73 +7556,6 @@
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
 					(reference "#PWR0154")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 172.72 125.73 0)
-		(unit 1)
-		(exclude_from_sim yes)
-		(in_bom no)
-		(on_board yes)
-		(dnp yes)
-		(uuid "2e5a9cac-083c-48bc-87e7-31b6aaebe2cb")
-		(property "Reference" "R96"
-			(at 174.752 125.73 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "100k"
-			(at 172.72 125.73 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 170.942 125.73 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 172.72 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 172.72 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "6805667a-6c6d-4741-8174-6c29a0cdaff3")
-		)
-		(pin "2"
-			(uuid "13ceaf3e-572e-45ae-bd91-11638d0c7e9c")
-		)
-		(instances
-			(project "xc17_prom_prog"
-				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "R96")
 					(unit 1)
 				)
 			)
@@ -9288,73 +9149,6 @@
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
 					(reference "C84")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 92.71 36.83 0)
-		(unit 1)
-		(exclude_from_sim yes)
-		(in_bom no)
-		(on_board yes)
-		(dnp yes)
-		(uuid "8dc2be22-6413-4a75-b1ce-f6a3654f3c9e")
-		(property "Reference" "R93"
-			(at 94.742 36.83 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "100k"
-			(at 92.71 36.83 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 90.932 36.83 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 92.71 36.83 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 92.71 36.83 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "5faf0fbd-9ffe-4dc9-b4e3-14478d12d2da")
-		)
-		(pin "2"
-			(uuid "56138c19-c18c-48c7-b8bc-b92097fa96ac")
-		)
-		(instances
-			(project "xc17_prom_prog"
-				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "R93")
 					(unit 1)
 				)
 			)

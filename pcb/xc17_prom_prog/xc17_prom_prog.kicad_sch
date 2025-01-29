@@ -6,8 +6,8 @@
 	(paper "A4")
 	(title_block
 		(title "XC17xxx PROM Programmer")
-		(date "2024-12-08")
-		(rev "2")
+		(date "2025-01-29")
+		(rev "3")
 		(company "CC-BY-SA-4.0 Michael Singer")
 		(comment 1 "https://github.com/msinger/xc17_prom_prog/")
 		(comment 2 "http://iceboy.a-singer.de/")
@@ -115,7 +115,7 @@
 	)
 	(wire
 		(pts
-			(xy 106.68 130.81) (xy 128.27 130.81)
+			(xy 106.68 128.27) (xy 128.27 128.27)
 		)
 		(stroke
 			(width 0)
@@ -132,26 +132,6 @@
 			(type default)
 		)
 		(uuid "86d2f84b-42e6-4572-95ba-71f87bdc5e6c")
-	)
-	(wire
-		(pts
-			(xy 106.68 125.73) (xy 128.27 125.73)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8d06613a-bd36-4963-b841-95710fbc4977")
-	)
-	(wire
-		(pts
-			(xy 171.45 130.81) (xy 193.04 130.81)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "90f4c97b-6e90-4015-826c-d8f2cdd85535")
 	)
 	(wire
 		(pts
@@ -205,7 +185,7 @@
 	)
 	(wire
 		(pts
-			(xy 106.68 128.27) (xy 128.27 128.27)
+			(xy 106.68 125.73) (xy 128.27 125.73)
 		)
 		(stroke
 			(width 0)
@@ -273,9 +253,19 @@
 		)
 		(uuid "ed6faec8-0b0c-4206-9b45-8b07ce44ba74")
 	)
+	(wire
+		(pts
+			(xy 171.45 128.27) (xy 193.04 128.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f53a1328-14da-4a84-a9ba-e308ad0e83c1")
+	)
 	(sheet
 		(at 193.04 72.39)
-		(size 27.94 60.96)
+		(size 27.94 58.42)
 		(fields_autoplaced yes)
 		(stroke
 			(width 0.1524)
@@ -295,7 +285,7 @@
 			)
 		)
 		(property "Sheetfile" "prom.kicad_sch"
-			(at 193.04 133.9346 0)
+			(at 193.04 131.3946 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -394,7 +384,7 @@
 			(uuid "2ef7fba9-db6e-4321-95f5-451e592ae0e5")
 		)
 		(pin "PROM_LED" input
-			(at 193.04 130.81 180)
+			(at 193.04 128.27 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -413,7 +403,7 @@
 	)
 	(sheet
 		(at 76.2 100.33)
-		(size 30.48 33.02)
+		(size 30.48 30.48)
 		(fields_autoplaced yes)
 		(stroke
 			(width 0.1524)
@@ -433,7 +423,7 @@
 			)
 		)
 		(property "Sheetfile" "prom_power_switch.kicad_sch"
-			(at 76.2 133.9346 0)
+			(at 76.2 131.3946 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -512,7 +502,7 @@
 			(uuid "b6ca4443-4eec-4395-80cc-056d44b5e44f")
 		)
 		(pin "SELECT_VPP_GND" input
-			(at 106.68 128.27 0)
+			(at 106.68 125.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -522,7 +512,7 @@
 			(uuid "0b88ab25-d698-467a-af3c-a3837cb65a8e")
 		)
 		(pin "SELECT_VPP_GND_WEAK" input
-			(at 106.68 130.81 0)
+			(at 106.68 128.27 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -530,16 +520,6 @@
 				(justify right)
 			)
 			(uuid "60615cc2-1e6d-4443-9ca7-6515c1807fe6")
-		)
-		(pin "SELECT_VPP_12V25_WEAK" input
-			(at 106.68 125.73 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "dd8be90a-6a38-469f-b3d1-00a0cff877d0")
 		)
 		(pin "SELECT_VPP_3V3" input
 			(at 106.68 113.03 0)
@@ -648,7 +628,7 @@
 		)
 	)
 	(sheet
-		(at 76.2 140.97)
+		(at 76.2 138.43)
 		(size 30.48 10.16)
 		(fields_autoplaced yes)
 		(stroke
@@ -660,7 +640,7 @@
 		)
 		(uuid "9602127b-3234-4151-9f61-33213634d411")
 		(property "Sheetname" "PROM Power Gen"
-			(at 76.2 140.2584 0)
+			(at 76.2 137.7184 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -669,7 +649,7 @@
 			)
 		)
 		(property "Sheetfile" "prom_power_gen.kicad_sch"
-			(at 76.2 151.7146 0)
+			(at 76.2 149.1746 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -687,7 +667,7 @@
 	)
 	(sheet
 		(at 128.27 72.39)
-		(size 43.18 60.96)
+		(size 43.18 58.42)
 		(fields_autoplaced yes)
 		(stroke
 			(width 0.1524)
@@ -707,7 +687,7 @@
 			)
 		)
 		(property "Sheetfile" "fpga.kicad_sch"
-			(at 128.27 133.9346 0)
+			(at 128.27 131.3946 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -916,7 +896,7 @@
 			(uuid "e3a3b83d-6e24-4dc6-9317-076ced108b2f")
 		)
 		(pin "PROM_LED" output
-			(at 171.45 130.81 0)
+			(at 171.45 128.27 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -926,7 +906,7 @@
 			(uuid "145f6626-a87e-484d-bb4c-d9c2f397d423")
 		)
 		(pin "SELECT_VPP_GND" output
-			(at 128.27 128.27 180)
+			(at 128.27 125.73 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -936,7 +916,7 @@
 			(uuid "fe2c7f09-0373-4368-9f2b-ba02806a9af8")
 		)
 		(pin "SELECT_VPP_GND_WEAK" output
-			(at 128.27 130.81 180)
+			(at 128.27 128.27 180)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -964,16 +944,6 @@
 				(justify left)
 			)
 			(uuid "7175dd73-9547-4c8a-88a1-4fac50ad9a18")
-		)
-		(pin "SELECT_VPP_12V25_WEAK" output
-			(at 128.27 125.73 180)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "572353b2-06f2-46c2-a002-f270b17492b3")
 		)
 		(instances
 			(project "xc17_prom_prog"

@@ -6,8 +6,8 @@
 	(paper "A4")
 	(title_block
 		(title "XC17xxx PROM Programmer")
-		(date "2024-12-08")
-		(rev "2")
+		(date "2025-01-29")
+		(rev "3")
 		(company "CC-BY-SA-4.0 Michael Singer")
 		(comment 1 "https://github.com/msinger/xc17_prom_prog/")
 		(comment 2 "http://iceboy.a-singer.de/")
@@ -3763,6 +3763,10 @@
 		(uuid "331929d4-c92e-493e-87c8-40f7bd8451f2")
 	)
 	(no_connect
+		(at 144.78 157.48)
+		(uuid "396b8c37-08d7-4143-90c2-46c7b15acce8")
+	)
+	(no_connect
 		(at 144.78 137.16)
 		(uuid "3f0e35b6-f196-4d56-a4dd-51de3718622d")
 	)
@@ -3809,6 +3813,10 @@
 	(no_connect
 		(at 257.81 55.88)
 		(uuid "ab560ce5-3623-4e1f-a269-6d46dade26ba")
+	)
+	(no_connect
+		(at 151.13 76.2)
+		(uuid "ad269698-76b0-45a7-b827-8a6ee71d7a50")
 	)
 	(no_connect
 		(at 257.81 45.72)
@@ -4470,16 +4478,6 @@
 			(type default)
 		)
 		(uuid "47fd27e0-45cd-4adb-bb27-7a3c9198c3e5")
-	)
-	(wire
-		(pts
-			(xy 123.19 76.2) (xy 151.13 76.2)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4bd1b43a-bfad-4dab-973f-e8aa4d454772")
 	)
 	(wire
 		(pts
@@ -5283,16 +5281,6 @@
 	)
 	(wire
 		(pts
-			(xy 144.78 157.48) (xy 173.99 157.48)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c34e8a84-3125-4347-af6a-d9ef366421a3")
-	)
-	(wire
-		(pts
 			(xy 265.43 107.95) (xy 265.43 109.22)
 		)
 		(stroke
@@ -6040,17 +6028,6 @@
 		)
 		(uuid "74e968e6-8301-4b2a-9e08-256848708213")
 	)
-	(label "SELECT_VPP_12V25_WEAK"
-		(at 127 76.2 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "7a329b3e-ec55-46ad-85a3-8b5a992f4a55")
-	)
 	(label "PROM_CLK"
 		(at 111.76 147.32 0)
 		(fields_autoplaced yes)
@@ -6215,17 +6192,6 @@
 			(justify left bottom)
 		)
 		(uuid "bf6246a4-e8fe-4ee1-94a2-fb2fb613169b")
-	)
-	(label "SELECT_VPP_12V25_WEAK"
-		(at 173.99 157.48 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "c293156a-cec6-45d0-8a0b-a2ec231813a7")
 	)
 	(label "PROM_~{CEO}"
 		(at 111.76 160.02 0)
@@ -6636,18 +6602,6 @@
 			(justify right)
 		)
 		(uuid "e0172fd6-9e49-471d-96cd-6c06e4641b8b")
-	)
-	(hierarchical_label "SELECT_VPP_12V25_WEAK"
-		(shape output)
-		(at 123.19 76.2 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "e76e909c-b601-47ba-ae17-9ca23fe263cc")
 	)
 	(symbol
 		(lib_id "power:+3V3")
