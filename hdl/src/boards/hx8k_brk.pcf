@@ -1,49 +1,49 @@
 # For the iCE40HX-8K Breakout Board
 
 # Clock
-set_io clk12m    J3
+set_io clk12m       J3
 
 # FTDI UART
-set_io rx        B10
-set_io tx        B12
-set_io n_rts     B13
-set_io n_cts     A15
-set_io n_dtr     A16
-set_io n_dsr     B14
-set_io n_dcd     B15
+set_io rx           B10
+set_io tx           B12
+set_io n_rts        B13
+set_io n_cts        A15
+set_io n_dtr        A16
+set_io n_dsr        B14
+set_io n_dcd        B15
 
 # LEDs
-set_io led[0]    R15
-set_io led[1]    C3
-set_io led[2]    B3
-set_io led[3]    C4
-set_io led[4]    C5
-set_io led[5]    A1
-set_io led[6]    A2
-set_io led[7]    B4
-set_io led[8]    B5
+set_io led[0]       R15
+set_io led[1]       C3
+set_io led[2]       B3
+set_io led[3]       C4
+set_io led[4]       C5
+set_io led[5]       A1
+set_io led[6]       A2
+set_io led[7]       B4
+set_io led[8]       B5
 
 # Voltage select
-set_io vcc_gnd      D15
-set_io vcc_3v3      E16
-set_io vcc_5v       F16
-set_io vpp_gnd      E14
-set_io vpp_gnd_weak F15
-set_io vpp_3v3      H14
-set_io vpp_3v7      D16
-set_io vpp_5v       C16
-set_io vpp_5v4      B16
-set_io vpp_12v25    D14
+set_io vcc_gnd      G16
+set_io vcc_3v3      G14
+set_io vcc_5v       J15
+set_io vpp_gnd      H16
+set_io vpp_gnd_weak G15
+set_io vpp_3v3      P16
+set_io vpp_3v7      N16
+set_io vpp_5v       M16
+set_io vpp_5v4      K15
+set_io vpp_12v25    K14
 
 # Level shifter DIR and /OE
-set_io dir       N16
-set_io n_oe      P16
-set_io n_oe_ceo  H16
-set_io n_oe_ctrl K15
+set_io dir          C16
+set_io n_oe         D14
+set_io n_oe_ceo     F16
+set_io n_oe_ctrl    D16
 
 # PROM signals
-set_io data      M16
-set_io clk       K14
-set_io n_ce      J15
-set_io n_ceo     G16
-set_io reset_oe  G14
+set_io data         B16
+set_io clk          D15
+set_io n_ce         E14
+set_io n_ceo        F15
+set_io reset_oe     E16

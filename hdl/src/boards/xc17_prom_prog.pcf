@@ -1,41 +1,41 @@
 # For the XC17xxx PROM Programmer Board
 
 # Clock
-set_io clk12m    15
+set_io clk12m        21
 
 # FTDI UART
-set_io rx        41
-set_io tx        40
-set_io n_rts     37
-set_io n_cts     36
-set_io n_dtr     34
-set_io n_dsr     33
-set_io n_dcd     30
+set_io rx           106
+set_io tx           105
+set_io n_rts        104
+set_io n_cts        102
+set_io n_dtr        101
+set_io n_dsr         99
+set_io n_dcd         98
 
 # PROM LED
-set_io led       91
+set_io led           37
 
 # Voltage select
-set_io vcc_gnd       65
-set_io vcc_3v3       57
-set_io vcc_5v        59
-set_io vpp_gnd       99
-set_io vpp_gnd_weak 100
-set_io vpp_3v3       60
-set_io vpp_3v7       54
-set_io vpp_5v        53
-set_io vpp_5v4       52
-set_io vpp_12v25     51
+set_io vcc_gnd       74
+set_io vcc_3v3      119
+set_io vcc_5v       118
+set_io vpp_gnd      116
+set_io vpp_gnd_weak  73
+set_io vpp_3v3      144
+set_io vpp_3v7      143
+set_io vpp_5v       142
+set_io vpp_5v4      141
+set_io vpp_12v25    139
 
 # Level shifter DIR and /OE
-set_io dir       73
-set_io n_oe      74
-set_io n_oe_ceo  63
-set_io n_oe_ctrl 71
+set_io dir           83
+set_io n_oe          82
+set_io n_oe_ceo      76
+set_io n_oe_ctrl     81
 
 # PROM signals
-set_io data      72
-set_io clk       68
-set_io n_ce      64
-set_io n_ceo     62
-set_io reset_oe  66
+set_io data          84
+set_io clk           80
+set_io n_ce          78
+set_io n_ceo         75
+set_io reset_oe      79

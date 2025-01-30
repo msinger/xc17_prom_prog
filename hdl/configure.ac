@@ -1,5 +1,5 @@
 AC_PREREQ([2.63])
-AC_INIT([xc17_prom_prog], [0.1])
+AC_INIT([xc17_prom_prog], [1.0])
 AC_CONFIG_SRCDIR([src/top.sv])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -26,17 +26,17 @@ NUM_LEDS=0
 HW_VERSION=
 HW_TYPE=
 if test "x$enable_board" = "xxc17_prom_prog"; then
-	FPGA_CORE=hx1k
-	FPGA_PACKAGE=vq100
+	FPGA_CORE=hx4k
+	FPGA_PACKAGE=tq144
 	NUM_LEDS=1
-	HW_VERSION=2
+	HW_VERSION=3
 	HW_TYPE=1
 fi
 if test "x$enable_board" = "xhx8k_brk"; then
 	FPGA_CORE=hx8k
 	FPGA_PACKAGE=ct256
 	NUM_LEDS=9
-	HW_VERSION=2
+	HW_VERSION=3
 	HW_TYPE=2
 fi
 

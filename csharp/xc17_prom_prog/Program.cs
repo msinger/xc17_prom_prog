@@ -136,6 +136,11 @@ namespace xc17_prom_prog
 			PromProgrammer.ProgrammerInfo info = prog.QueryInfo();
 			Console.Error.WriteLine("HDL ver.: " + info.HdlVersion + "  HW ver.: " + info.HwVersion);
 			Console.Error.WriteLine("HW type: " + info.HwType);
+			if (info.HwVersion != 3)
+			{
+				Console.Error.WriteLine("Error: Only compatible with HW ver. 3.");
+				return 4;
+			}
 
 			if (promType != null)
 				Console.Error.WriteLine("PROM type: " + promInfo.Type);
@@ -162,7 +167,6 @@ namespace xc17_prom_prog
 					case "vpp-5v":         voltageArg =  8; break;
 					case "vpp-5v4":        voltageArg =  9; break;
 					case "vpp-12v25":      voltageArg = 10; break;
-					case "vpp-12v25-weak": voltageArg = 11; break;
 					default: Usage(Console.Error); return 2;
 				}
 				prog.TestVoltage(voltageArg);
@@ -261,7 +265,7 @@ namespace xc17_prom_prog
 			o.WriteLine("  --test-voltage VOLTAGE  Don't use this option when a PROM is inserted! Switch on a single");
 			o.WriteLine("                          supply VOLTAGE and switch off all others for testing. VOLTAGE can");
 			o.WriteLine("                          be one of vcc-gnd, vcc-3v3, vcc-5v, vpp-gnd, vpp-gnd-weak, vpp-3v3,");
-			o.WriteLine("                          vpp-3v7, vpp-5v, vpp-5v4, vpp-12v25, vpp-12v25-weak, off.");
+			o.WriteLine("                          vpp-3v7, vpp-5v, vpp-5v4, vpp-12v25, off.");
 			o.WriteLine("  --detect                Just detect the presence of the PROM chip by verifying device ID.");
 			o.WriteLine("  --blank                 Perform blank check; returns 0 if blank, otherwise 1.");
 			o.WriteLine("  --read-reset            Read reset polarity; returns 0 if inverted (active low), otherwise 1.");

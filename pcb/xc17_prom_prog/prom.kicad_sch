@@ -6,7 +6,7 @@
 	(paper "A4")
 	(title_block
 		(title "XC17xxx PROM Programmer")
-		(date "2025-01-29")
+		(date "2025-01-30")
 		(rev "3")
 		(company "CC-BY-SA-4.0 Michael Singer")
 		(comment 1 "https://github.com/msinger/xc17_prom_prog/")
@@ -7021,7 +7021,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "152b9eb9-22ce-4811-82de-a8d528d485cf")
-		(property "Reference" "C91"
+		(property "Reference" "C95"
 			(at 180.975 29.21 0)
 			(effects
 				(font
@@ -7075,7 +7075,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "C91")
+					(reference "C95")
 					(unit 1)
 				)
 			)
@@ -7436,7 +7436,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "2c60b805-be6b-4e2a-80db-578587853b92")
-		(property "Reference" "C89"
+		(property "Reference" "C93"
 			(at 160.655 29.21 0)
 			(effects
 				(font
@@ -7490,7 +7490,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "C89")
+					(reference "C93")
 					(unit 1)
 				)
 			)
@@ -7635,7 +7635,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "3c73d9b9-214b-4908-b218-14a76ff91f60")
-		(property "Reference" "R91"
+		(property "Reference" "R84"
 			(at 54.102 163.83 90)
 			(effects
 				(font
@@ -7687,7 +7687,7 @@
 		(instances
 			(project ""
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "R91")
+					(reference "R84")
 					(unit 1)
 				)
 			)
@@ -8096,7 +8096,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "54bf82ed-b241-416c-9593-6b6c3cd99d21")
-		(property "Reference" "C90"
+		(property "Reference" "C94"
 			(at 170.815 29.21 0)
 			(effects
 				(font
@@ -8150,7 +8150,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "C90")
+					(reference "C94")
 					(unit 1)
 				)
 			)
@@ -8365,7 +8365,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "5eaa7d8a-aca1-40f3-a584-7bd3fc1ebbef")
-		(property "Reference" "R94"
+		(property "Reference" "R86"
 			(at 94.742 49.53 90)
 			(effects
 				(font
@@ -8417,7 +8417,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "R94")
+					(reference "R86")
 					(unit 1)
 				)
 			)
@@ -8562,7 +8562,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "6b804590-891f-4767-b900-3d0ad35b5483")
-		(property "Reference" "R95"
+		(property "Reference" "R87"
 			(at 136.652 163.83 90)
 			(effects
 				(font
@@ -8614,7 +8614,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "R95")
+					(reference "R87")
 					(unit 1)
 				)
 			)
@@ -8629,7 +8629,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "7299200c-f089-4298-bc1b-7e7400c9e865")
-		(property "Reference" "R97"
+		(property "Reference" "R88"
 			(at 174.752 138.43 90)
 			(effects
 				(font
@@ -8681,7 +8681,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "R97")
+					(reference "R88")
 					(unit 1)
 				)
 			)
@@ -8696,7 +8696,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "7f39319e-0e36-4dd7-9257-24b71dc75f93")
-		(property "Reference" "C92"
+		(property "Reference" "C96"
 			(at 191.135 29.21 0)
 			(effects
 				(font
@@ -8750,7 +8750,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "C92")
+					(reference "C96")
 					(unit 1)
 				)
 			)
@@ -8960,7 +8960,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "8627dd08-f46e-4d15-92ec-2cca4f26bfbb")
-		(property "Reference" "C88"
+		(property "Reference" "C92"
 			(at 118.745 171.45 0)
 			(effects
 				(font
@@ -9014,7 +9014,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "C88")
+					(reference "C92")
 					(unit 1)
 				)
 			)
@@ -9094,7 +9094,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "8bdcf03d-d287-4dbe-acd2-6a916202a3aa")
-		(property "Reference" "C84"
+		(property "Reference" "C88"
 			(at 18.415 123.19 0)
 			(effects
 				(font
@@ -9148,7 +9148,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "C84")
+					(reference "C88")
 					(unit 1)
 				)
 			)
@@ -9163,7 +9163,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "924700f7-4d27-4daf-ae4b-4195205f8750")
-		(property "Reference" "R98"
+		(property "Reference" "R89"
 			(at 268.732 34.29 90)
 			(effects
 				(font
@@ -9215,7 +9215,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "R98")
+					(reference "R89")
 					(unit 1)
 				)
 			)
@@ -9360,7 +9360,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "a24162f9-ee81-4b3f-932e-099355fa2be6")
-		(property "Reference" "C85"
+		(property "Reference" "C89"
 			(at 28.575 34.29 0)
 			(effects
 				(font
@@ -9414,7 +9414,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "C85")
+					(reference "C89")
 					(unit 1)
 				)
 			)
@@ -10080,7 +10080,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "ca88355d-5b95-4d75-bc45-798819d90af7")
-		(property "Reference" "C87"
+		(property "Reference" "C91"
 			(at 108.585 171.45 0)
 			(effects
 				(font
@@ -10134,7 +10134,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "C87")
+					(reference "C91")
 					(unit 1)
 				)
 			)
@@ -10149,7 +10149,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "caf29880-c366-436b-8be8-4a16549dffd0")
-		(property "Reference" "C86"
+		(property "Reference" "C90"
 			(at 28.575 123.19 0)
 			(effects
 				(font
@@ -10203,7 +10203,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "C86")
+					(reference "C90")
 					(unit 1)
 				)
 			)
@@ -10283,7 +10283,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "dcdcab06-82ff-4c5d-bdfa-da84475de4bc")
-		(property "Reference" "R92"
+		(property "Reference" "R85"
 			(at 56.642 74.93 90)
 			(effects
 				(font
@@ -10335,7 +10335,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "R92")
+					(reference "R85")
 					(unit 1)
 				)
 			)
@@ -10873,7 +10873,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "f922f58e-8070-4a34-bf74-f36fbe0a1463")
-		(property "Reference" "C83"
+		(property "Reference" "C87"
 			(at 18.415 34.29 0)
 			(effects
 				(font
@@ -10927,7 +10927,7 @@
 		(instances
 			(project "xc17_prom_prog"
 				(path "/3afea672-343d-4fc8-b012-067ac21cc0e9/43172acb-73d1-430e-bac0-31c53bbc6dab"
-					(reference "C83")
+					(reference "C87")
 					(unit 1)
 				)
 			)

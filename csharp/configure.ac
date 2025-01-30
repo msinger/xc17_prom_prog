@@ -1,5 +1,5 @@
 AC_PREREQ(2.63)
-AC_INIT(xc17_prom_prog, 1.0)
+AC_INIT(xc17_prom_prog, 1.1)
 AC_CONFIG_SRCDIR([xc17_prom_prog/Program.cs])
 AC_CONFIG_MACRO_DIR([m4])
 
