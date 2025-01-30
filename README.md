@@ -5,15 +5,24 @@ Tool for programming Xilinx XC17xxx families of PROM chips that are used for sto
 bitstream of the Spartan FPGA.
 
 I developed this programmer to be able to program the PROM chips used in the Wide-Boy64. The Wide-Boy64
-CGB uses the XC1701, and the [Wide-Boy64 AGB](http://iceboy.a-singer.de/doc/wide_boy.html) uses the XC17S20XL.
+CGB uses the XC1701L, and the [Wide-Boy64 AGB](http://iceboy.a-singer.de/doc/wide_boy.html) uses the XC17S20XL.
+
+I originally thought that the Wide-Boy64 CGB uses the XC1701 chip (without the L at the end), because that's
+how those chips are labeled on their package. After buying some of those XC1701 chips and reading out their
+device ID, I realized that they actually are XC1701L chips. This makes sense by the way, since the Spartan
+XC4010XL FPGA inside the Wide-Boy64 CGB has 3.3&nbsp;V IO voltage, which matches the XC1701L PROM. The XC1701
+is a 5&nbsp;V device.
 
 You can still buy the XC17S20XL chips here:
 - https://de.aliexpress.com/item/1005006854844265.html
 - https://www.win-source.net/products/detail/xilinx-inc/xc17s20lpc.html
 - https://www.win-source.net/products/detail/xilinx-inc/xc17s20xlpd8c.html
 
-You can still buy a very limited supply of the XC1701 chips here:
+You can still buy a very limited supply of the XC1701L chips here:
 - https://www.win-source.net/products/detail/xilinx-inc/xc1701pd8c.html
+
+The Xilinx datasheets recommend the XC17512L to be used with the Spartan XC4010XL (which is the FPGA used in
+the Wide-Boy64 CGB). So, the XC17512L could be used instead of the XC1701L.
 
 
 Files in this repo
