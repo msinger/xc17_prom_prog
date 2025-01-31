@@ -364,3 +364,85 @@ particular PROM type uses 3.3&nbsp;V in programming mode, which requires a sligh
 VPP drop from 12.25&nbsp;V to 3.3&nbsp;V or 3.7&nbsp;V. Testing for this PROM type isn't necessary if you
 just want to use the programmer to program PROMs for Wide-Boys. Both of the Wide-Boy types are using PROMs
 that run on 5&nbsp;V in programming mode.
+
+
+Command line options
+--------------------
+
+| Option                                                        | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <code>&#x2011;&#x2011;help</code>                             | Prints summary of all options.                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| <code>&#x2011;&#x2011;prom&nbsp;PROM</code>                   | Configures the programmer to handle the specific PROM chip. Replace `PROM` with the type name of any of the supported PROM chips listed in the PROM type table above, like `xc17s20xl` for example. This option must be used in combination with any of the other options that specify the operation.                                                                                                                                                                  |
+| <code>&#x2011;&#x2011;test&#x2011;echo</code>                 | Tests communication and BRAM buffers on programmer.                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| <code>&#x2011;&#x2011;test&#x2011;voltage&nbsp;VOLTAGE</code> | Don't use this option when a PROM is inserted! Switch on a single supply `VOLTAGE` and switch off all others for testing. `VOLTAGE` can be one of <code>vcc&#x2011;gnd</code>, <code>vcc&#x2011;3v3</code>, <code>vcc&#x2011;5v</code>, <code>vpp&#x2011;gnd</code>, <code>vpp&#x2011;gnd&#x2011;weak</code>, <code>vpp&#x2011;3v3</code>, <code>vpp&#x2011;3v7</code>, <code>vpp&#x2011;5v</code>, <code>vpp&#x2011;5v4</code>, <code>vpp&#x2011;12v25</code>, `off`. |
+| <code>&#x2011;&#x2011;detect</code>                           | Detect presence of the PROM chip by reading manufacturer and device ID. The <code>&#x2011;&#x2011;prom</code> option must be used to specify the PROM type.                                                                                                                                                                                                                                                                                                            |
+| <code>&#x2011;&#x2011;blank</code>                            | Performs blank check on a PROM chip. Returns 0 if the chip is blank, otherwise 1. Whether the reset polarity of the chip was programmed does not affect the result. The <code>&#x2011;&#x2011;prom</code> option must be used to specify the PROM type.                                                                                                                                                                                                                |
+| <code>&#x2011;&#x2011;read&#x2011;reset</code>                | Reads reset polarity of the chip. Returns 0 if the reset polarity was programmed to be active low; otherwise, if it is not programmed (active high), it returns 1. The <code>&#x2011;&#x2011;prom</code> option must be used to specify the PROM type.                                                                                                                                                                                                                 |
+| <code>&#x2011;&#x2011;read&nbsp;OUTFILE</code>                | Reads the content of the chip and writes it into `OUTFILE`. The <code>&#x2011;&#x2011;prom</code> option must be used to specify the PROM type.                                                                                                                                                                                                                                                                                                                        |
+| <code>&#x2011;&#x2011;margin&#x2011;read&nbsp;OUTFILE</code>  | Reads the content of the chip and writes it into `OUTFILE`. Applies a voltage margin of 0.4&nbsp;V between VCC and VPP during the read operation. This margin makes it more likely to misread bits that haven't been charged sufficiently during programming. So you can use this read option when you want to challenge the "health" or "quality" of the programmed bits. The <code>&#x2011;&#x2011;prom</code> option must be used to specify the PROM type.         |
+| <code>&#x2011;&#x2011;verify&nbsp;INFILE</code>               | Verifies that the content of the chip matches the content of `INFILE`. The <code>&#x2011;&#x2011;prom</code> option must be used to specify the PROM type.                                                                                                                                                                                                                                                                                                             |
+| <code>&#x2011;&#x2011;margin&#x2011;verify&nbsp;INFILE</code> | Verifies that the content of the chip matches the content of `INFILE`. Same as for <code>&#x2011;&#x2011;margin&#x2011;read</code> it applies a voltage margin of 0.4&nbsp;V between VCC and VPP. The <code>&#x2011;&#x2011;prom</code> option must be used to specify the PROM type.                                                                                                                                                                                  |
+| <code>&#x2011;&#x2011;program&nbsp;INFILE</code>              | Programs the content of `INFILE` onto the PROM chip. For chips that support a word by word verification during programming, the operation will abort as soon as a word was detected to be written incorrectly. The <code>&#x2011;&#x2011;prom</code> option must be used to specify the PROM type.                                                                                                                                                                     |
+| <code>&#x2011;&#x2011;force&#x2011;program&nbsp;INFILE</code> | Programs the content of `INFILE` onto the PROM chip. This option should be used for measuring the programming pulse with an oscilloscope. It skips the PROM chip detection and ignores verification errors, so it will run through even if no chip is inserted into the socket. The <code>&#x2011;&#x2011;prom</code> option must be used to specify the PROM type.                                                                                                    |
+| <code>&#x2011;&#x2011;program&#x2011;reset</code>             | Programs the reset polarity of the PROM chip to be active low. If not programmed, the reset polarity is active high. The <code>&#x2011;&#x2011;prom</code> option must be used to specify the PROM type.                                                                                                                                                                                                                                                               |
+
+
+Reading a PROM chip
+-------------------
+
+To read the content of an already programmed PROM chip, use the following command line:
+
+```
+xc17_prom_prog.exe COMMPORT --prom PROMTYPE --read OUTFILE
+```
+
+As an example, if you want to read the XC17S20XL PROM chip from a Wide-Boy64 AGB on Linux,
+your command line will look something like this:
+
+```
+mono xc17_prom_prog.exe /dev/ttyUSB1 --prom xc17s20xl --read wideboy64agb_prom.bin
+```
+
+
+Programming a PROM chip
+-----------------------
+
+To program an image file onto a blank PROM chip, perform the following actions:
+
+First, check if the chip is really blank:
+
+```
+xc17_prom_prog.exe COMMPORT --prom PROMTYPE --blank
+```
+
+A message will be displayed if the chip isn't blank. The reset polarity of the chip is
+always printed before each operation. So you can also check that the reset is not programmed
+already.
+
+Then we can program the image file:
+
+```
+xc17_prom_prog.exe COMMPORT --prom PROMTYPE --program INFILE
+```
+
+After programming the data, you have to decide if you want to program the reset polarity to be active low.
+Both Wide-Boy variants (CGB and AGB) require an active low reset of the chip. So if you want to program
+the chip for use in a Wide-Boy, then you have to program the reset polarity:
+
+```
+xc17_prom_prog.exe COMMPORT --prom PROMTYPE --program-reset
+```
+
+Remember, before performing any operation, the programming tool always prints the current reset polarity.
+So, the "program reset" operation will report the current reset polarity as "not programmed" (active high).
+If programming the reset polarity fails, there will be an error message.
+
+Finally, we can verify if the programming was successful:
+
+```
+xc17_prom_prog.exe COMMPORT --prom PROMTYPE --margin-verify INFILE
+```
+
+This should now also report the reset polarity as "programmed" (active low), if you have performed that
+step before.
+
