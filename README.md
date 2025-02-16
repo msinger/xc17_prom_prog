@@ -4,7 +4,7 @@ XC17xxx PROM Programmer
 Tool for programming Xilinx XC17xxx families of PROM chips that are used for storing the configuration
 bitstream of the Spartan FPGA.
 
-![PCB](pcb.png)
+![PCB](img/pcb.png)
 
 I developed this programmer to be able to program the PROM chips used in the Wide-Boy64. The Wide-Boy64
 CGB uses the XC1701L, and the [Wide-Boy64 AGB](http://iceboy.a-singer.de/doc/wide_boy.html) uses the XC17S20XL.
@@ -337,6 +337,29 @@ If VPP takes too long to fall down to 5&nbsp;V, then the resistor R82 is probabl
 a smaller one. If VPP drops below 5&nbsp;V or if it is unstable or oscillating for some microseconds after
 falling down, then resistor R82 could be too small. Try a bigger one in that case.
 
+![Enter programming mode pulse](img/enter_prog_pulse.png)
+
+This picture shows VCC (yellow) and VPP (cyan) during the 12.25&nbsp;V pulse. The dark blue and purple channels
+are added, so I can correctly photoshop the additional signals from the logic analyzer underneath the
+oscilloscope screenshot. You can see VCC getting a bit unstable while VPP rises to 12.25&nbsp;V. There is a
+delay of 4&nbsp;&micro;s between switching off the 5&nbsp;V LDO and switching on the 12.25&nbsp;V LDO for VPP.
+This delay is needed, because when switching off, it takes 2 or 3&nbsp;&micro;s until the gates of the MOSFETs
+get drained and the MOSFETs actually switch off. I had chosen a slightly longer delay to make sure that the
+5 and 12.25&nbsp;V LDOs are not switched on at the same time, because this would allow the 12.25&nbsp;V to
+backflow through the diode (D5) above the 5&nbsp;V LDO. This would destabilize both voltages and takes a long
+time for VPP to climb up to 12.25&nbsp;V due to the near short circuit through the diode. The same
+4&nbsp;&micro;s pause exists at the end of the pulse, where the 12.25&nbsp;V gets drained by switching on the
+VPP\_GND and VPP\_GND\_WEAK signals. VPP\_GND switches on the NPN transistor Q20 to quickly drain VPP down
+towards GND. VPP\_GND\_WEAK switches on Q21 to drain VPP through resistor R82. VPP\_GND is only enabled for
+2&nbsp;&micro;s. We don't want to drain VPP lower than 5&nbsp;V. We could leave it enabled for longer, but
+I want to stay on the safe side, we need to consider tolerances of the BC850 transistors. VPP\_GND\_WEAK is
+enabled for 7&nbsp;&micro;s and VPP\_5V (which enables the 5&nbsp;V LDO) overlaps with it for 2&nbsp;&micro;s.
+The LDO is able to sustain its output voltage through the resistor R82. By having them overlap, we can make
+sure that VPP really drops to 5&nbsp;V within 5 or 6&nbsp;&micro;s. For newer chips that use a
+V<sub>PPNOM</sub> of 3.3&nbsp;V instead of 5, VPP\_GND\_WEAK will stay enabled for a total of
+11&nbsp;&micro;s, because we need to drain VPP a bit more. The overlap with VPP\_3V3 would be 6&nbsp;&micro;s
+in that case.
+
 Next, we want to check the programming pulse. It is basically the same, but it will fall down to 5.4&nbsp;V
 instead of 5&nbsp;V, and it stays at 12.25&nbsp;V for a much longer time. To make the programmer generate
 programming pulses, you can run the following command without a PROM chip inserted into the socket:
@@ -364,6 +387,18 @@ particular PROM type uses 3.3&nbsp;V in programming mode, which requires a sligh
 VPP drop from 12.25&nbsp;V to 3.3&nbsp;V or 3.7&nbsp;V. Testing for this PROM type isn't necessary if you
 just want to use the programmer to program PROMs for Wide-Boys. Both of the Wide-Boy types are using PROMs
 that run on 5&nbsp;V in programming mode.
+
+Just for fun, here is a zoomed out overview of a complete programming operation of a XC17S20XL PROM chip
+with the Wide-Boy 64 AGB bitstream:
+
+![Programming Wide-Boy64 AGB bitstream to XC17S20XL PROM](img/prog_xc17s20xl.png)
+
+You can see how VCC and VPP start at 5&nbsp;V. VPP spikes up to 12.25&nbsp;V a few times at the very
+beginning, until it then changes between 5.4&nbsp;V and 12.25&nbsp;V while programming all the data and
+doing margin verifies every 64 bits. The whole process takes just 1.4 seconds. You can also see some gaps
+near the end of programming. These gaps happen when the C# tool running on the PC isn't providing the data
+fast enough over the serial port. Gaps can also happen if there is nothing to program due to larger areas
+filled with 0xff.
 
 
 Command line options
