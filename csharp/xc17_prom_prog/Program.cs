@@ -125,7 +125,7 @@ namespace xc17_prom_prog
 			PromProgrammer prog;
 			try
 			{
-				prog = new PromProgrammer(port, Console.Error);
+				prog = new PromProgrammer(port);
 			}
 			catch (IOException)
 			{

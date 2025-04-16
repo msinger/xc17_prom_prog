@@ -64,9 +64,6 @@ AC_SUBST(CSC_IMPLICIT_REFS_ARG, \$\{CSC_NO_IMPLICIT_REFS\})dnl
 
 # -langversion option
 AC_MSG_CHECKING([whether $CSC accepts -langversion:8])
-cat >test_in.cs <<EOF
-public static class Program { public static void Main() { using var r = new System.BinaryReader(System.Console.In); } }
-EOF
 $CSC -target:exe -out:test_out.exe -langversion:8 test_in.cs >/dev/null 2>&1
 if test "x${?}" = "x0"; then
 	AC_MSG_RESULT(yes)

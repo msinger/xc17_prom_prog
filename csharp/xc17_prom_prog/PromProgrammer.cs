@@ -559,13 +559,10 @@ namespace xc17_prom_prog
 			ResetPort();
 		}
 
-		private readonly TextWriter log;
-
-		public PromProgrammer(string port, TextWriter log)
+		public PromProgrammer(string port)
 		{
 			this.prom = new PromInfo();
 			this.port = port;
-			this.log = (log != null) ? log : TextWriter.Null;
 			OpenPort();
 		}
 
